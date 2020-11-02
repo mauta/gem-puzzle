@@ -1,0 +1,127 @@
+@font-face {
+  font-family: "Gasrux";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/19689.otf");
+
+}
+
+h1{
+  text-align: center;
+  font-family: "Gasrux";
+}
+
+.block {
+  display: flex;
+  box-sizing: border-box;
+  font-family: "Gasrux", cursive;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  background-color: transparent;
+  border: 1px solid black;
+  box-shadow: 0 0 0 60px rgba(0, 0, 0, 0) inset, .1em .1em .2em gray;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.block:hover {
+  background-color: rgba(0, 0, 0, .03);
+}
+
+.block:active {
+  top: .1em;
+  left: .1em;
+  box-shadow: 0 0 0 60px rgba(0, 0, 0, .05) inset;
+}
+
+.block-none{
+ border: none;
+ box-shadow: none;
+}
+
+
+.field{
+  margin: 0 auto;
+  width: 400px;
+  height: 400px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+grid-template-rows: repeat(5, 1f);
+grid-gap: 5px;
+margin-bottom: 30px;
+}
+
+.buttons{
+  width: 400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+grid-gap: 5px;
+margin-bottom: 30px;
+}
+
+.buttons2{
+  width: 400px;
+  height: 50px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+grid-gap: 5px;
+margin-bottom: 30px;
+}
+
+.buttons3{
+  width: 400px;
+  height: 50px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+grid-gap: 5px;
+margin-bottom: 30px;
+}
+
+.btn{
+  overflow-wrap: normal;
+  font-family: "Gasrux", cursive;
+  font-weight: bold;
+  font-size: 18px;
+  background-color: transparent;
+  border: 1px solid black;
+  box-shadow: 0 0 0 60px rgba(0, 0, 0, 0) inset, .1em .1em .2em gray;
+  border-radius: 3px;
+}
+
+
+.header{
+  display: flex;
+  width: 400px;
+  margin: 0 auto;
+  justify-content: space-between;
+  font-family: "Gasrux", cursive;
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+
+.burger{
+  background-color: transparent;
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
