@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/extensions */
 
-import create from './utils/create.js';
+import create from '../utils/create.js';
 import Cell from './cell.js';
+import {btnSound, isSound} from './sound.js';
 
-const main = create('main', '', create('h1', 'title', 'Gem Puzzle'));
 
 export default class Field {
   constructor(size = 4) {
@@ -12,28 +12,39 @@ export default class Field {
   }
 
   init() {
+    const main = document.querySelector('main');
     this.field = create('div', 'field', null, main);
     this.field.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
     this.field.style.gridTemplateRows = `repeat(${this.size}, 1fr)`;
-    document.body.prepend(main);
+    document.body.append(main);
     return this;
   }
 
   generate() {
-
     let countCell = this.size * this.size;
     const numbers = [...Array(countCell - 1).keys()]
       .map(x => x + 1)
-    .sort(() => Math.random() - 0.5)
+      .sort(() => Math.random() - 0.5)
+    localStorage.setItem('currentGame', numbers);
 
+    return numbers
+  }
+
+  draw(isNew) {
+    let countCell = this.size * this.size;
+    let numbers
     const empty = {
       value: countCell - 1,
       left: this.size,
       top: this.size
     }
-
     this.cells = [];
 
+    if (isNew) {
+      numbers = this.generate();
+    } else {
+      numbers = localStorage.getItem('currentGame').split(',')
+    }
     const move = (item) => {
       const leftDiff = Math.abs(empty.left - item.left);
       const topDiff = Math.abs(empty.top - item.top);
@@ -84,10 +95,19 @@ export default class Field {
 
     this.cells.forEach(item => item.element.addEventListener('click', () => {
       move(item);
+      let isSoundOn = isSound();
+      if (isSoundOn) {
+        const audio = document.querySelector('.audio');
+        audio.currentTime = 0;
+        audio.play();
+      }
     }));
-
-    console.log(this.cells)
   }
 
+  delete() {
+    while (this.field.firstChild) {
+      this.field.removeChild(this.field.firstChild)
+    }
+  }
 
 }

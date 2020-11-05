@@ -1,10 +1,22 @@
-// let Field = require('./field.js');
 /* eslint-disable import/extensions */
-import Field from './field.js';
+import Field from './blocks/field.js';
+import create from './utils/create.js';
+import btnNewGame from './blocks/newgame.js';
+import btnRestart from './blocks/restart.js';
+import btnCapitulate from './blocks/capitulate.js';
+import btnAddition from './blocks/addition.js';
 
-let field = new Field(5);
+const START_SIZE = 4;
+const isNew = true
+let field = new Field(START_SIZE);
+const main = create('main', '', create('h1', 'title', 'Gem Puzzle'));
+document.body.prepend(main);
 
+const buttons = create('div', 'buttons', null, main);
+
+btnNewGame(field);
+btnRestart(field);
+btnCapitulate(field)
+btnAddition()
 field.init();
-field.generate();
-
-
+field.draw(isNew);
