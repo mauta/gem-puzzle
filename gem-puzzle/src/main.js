@@ -24,4 +24,3 @@ field.init();
 field.draw(isNew);
 
 
-let diff = new Difficulty().init()

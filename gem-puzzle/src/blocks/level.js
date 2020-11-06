@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 import create from '../utils/create.js';
+import Difficulty from './difficulty.js';
 
 export default function btnlevel() {
   const buttons = document.querySelector('.buttons');
@@ -8,7 +9,7 @@ export default function btnlevel() {
 
   btn.addEventListener('click', () => {
 
-    // const popup = create('div', 'popup', 'уровень', main);
+    let popup = new Difficulty().init()
 
   })
 }
