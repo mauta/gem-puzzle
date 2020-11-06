@@ -5,6 +5,8 @@ import btnNewGame from './blocks/newgame.js';
 import btnRestart from './blocks/restart.js';
 import btnCapitulate from './blocks/capitulate.js';
 import btnAddition from './blocks/addition.js';
+import RadioInput from './blocks/radiobtn.js';
+import Difficulty from './blocks/difficulty.js';
 
 const START_SIZE = 4;
 const isNew = true
@@ -20,3 +22,6 @@ btnCapitulate(field)
 btnAddition()
 field.init();
 field.draw(isNew);
+
+
+let diff = new Difficulty().init()
