@@ -7,8 +7,9 @@ import Field from './field.js';
 
 
 export default class Difficulty {
-  constructor() {
+  constructor(field) {
     this.main = document.querySelector('main');
+    this.field = field;
   }
 
   init() {
@@ -72,12 +73,14 @@ export default class Difficulty {
       popup.remove()
     }
 
+    console.log(this.field)
+
+
     btnsubmit.addEventListener('click', () => {
-      const oldField = document.querySelector('.field')
-      oldField.remove()
-      let field = new Field(level)
-      field.init();
-      field.draw(true);
+      console.log(this.field)
+      this.field.delete()
+      this.field.init(level);
+      this.field.draw(true);
       closePopup(this.popup)
     })
 

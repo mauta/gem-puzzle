@@ -3,20 +3,30 @@
 
 import create from '../utils/create.js';
 import Cell from './cell.js';
-import {btnSound, isSound} from './sound.js';
+import {
+  btnSound,
+  isSound
+} from './sound.js';
 
 
 export default class Field {
   constructor(size = 4) {
     this.size = size;
+    this.wrap = document.querySelector('.field-wrap');
+    this.stepsCounter = 0;
+    this.timeCounter = 0;
+    this.timerStop = '';
+    this.steps = create('div', 'steps', `${this.stepsCounter} шагов`)
+    this.time = create('div', 'times', `${this.timeCounter}`)
+    this.score = create('div', 'score', [create('div', 'record', 'рекорды'), this.steps, this.time], this.wrap);
+    this.field = create('div', 'field', null, this.wrap);
   }
 
-  init() {
-    const main = document.querySelector('main');
-    this.field = create('div', 'field', null, main);
+  init(size) {
+    this.size = size || this.size;
     this.field.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
     this.field.style.gridTemplateRows = `repeat(${this.size}, 1fr)`;
-    document.body.append(main);
+
     return this;
   }
 
@@ -30,7 +40,20 @@ export default class Field {
     return numbers
   }
 
+  step() {
+    this.stepsCounter++
+    this.steps.textContent = `${this.stepsCounter} шагов`;
+  }
+
+  timer() {
+    this.timeCounter++
+    let sec = this.timeCounter % 60
+    let min = Math.floor(this.timeCounter / 60)
+    this.time.textContent = `${min} : ${sec}`
+  }
+
   draw(isNew) {
+    this.steps.textContent = `${this.stepsCounter} шагов`;
     let countCell = this.size * this.size;
     let numbers
     const empty = {
@@ -62,6 +85,12 @@ export default class Field {
         cellMoved.top = emptyTop;
         cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
         cellMoved.element.style.gridRowStart = `${emptyTop}`;
+        let isSoundOn = isSound();
+        if (isSoundOn) {
+          const audio = document.querySelector('.audio');
+          audio.currentTime = 0;
+          audio.play();
+        }
       }
 
       for (let i = 0; i < countCell - 1; i++) {
@@ -78,6 +107,8 @@ export default class Field {
           this.cells.forEach(el => el.element.style.opacity = '0.1')
         }
       }
+
+      this.step();
     }
 
     for (let i = 0; i < countCell - 1; i++) {
@@ -95,16 +126,20 @@ export default class Field {
 
     this.cells.forEach(item => item.element.addEventListener('click', () => {
       move(item);
-      let isSoundOn = isSound();
-      if (isSoundOn) {
-        const audio = document.querySelector('.audio');
-        audio.currentTime = 0;
-        audio.play();
-      }
+
     }));
+
+    this.timerStop = setInterval(() => {
+      this.timer();
+    }, 1000)
   }
 
+
+
   delete() {
+    this.stepsCounter = 0;
+    this.timeCounter = 0;
+    clearInterval(this.timerStop);
     while (this.field.firstChild) {
       this.field.removeChild(this.field.firstChild)
     }

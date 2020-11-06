@@ -6,7 +6,7 @@ import btnLevel from './level.js';
 import {btnSound, isSound} from './sound.js';
 
 
-export default function btnAddition() {
+export default function btnAddition(field) {
   const buttons = document.querySelector('.buttons');
   const btn = create('button', 'bntCapitulate btn', 'плюшки', buttons, ['type', 'button']);
   let isOpenAdds = false
@@ -16,7 +16,7 @@ export default function btnAddition() {
     if (!isOpenAdds) {
       btnSave();
       btnLoad();
-      btnLevel();
+      btnLevel(field);
       btnSound();
       isOpenAdds = !isOpenAdds
     } else {

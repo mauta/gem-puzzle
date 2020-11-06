@@ -8,6 +8,7 @@ export default function btnNewGame(field) {
   const btn = create('button', 'bntNewGame btn', 'новая', buttons, ['type', 'button']);
 
   btn.addEventListener('click', () => {
+
     field.delete()
     field.draw(true);
   })

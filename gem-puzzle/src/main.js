@@ -10,17 +10,22 @@ import Difficulty from './blocks/difficulty.js';
 
 const START_SIZE = 4;
 const isNew = true
-let field = new Field(START_SIZE);
+
 const main = create('main', '', create('h1', 'title', 'Gem Puzzle'));
 document.body.prepend(main);
 
-const buttons = create('div', 'buttons', null, main);
+const fieldWrap = create('div', 'field-wrap', null, main);
 
+let field = new Field(START_SIZE);
+
+const buttons = create('div', 'buttons', null, main);
 btnNewGame(field);
 btnRestart(field);
 btnCapitulate(field)
-btnAddition()
+btnAddition(field)
+
+
+main.append(fieldWrap);
+
 field.init();
 field.draw(isNew);
-
-

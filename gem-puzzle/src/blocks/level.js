@@ -2,14 +2,14 @@
 import create from '../utils/create.js';
 import Difficulty from './difficulty.js';
 
-export default function btnlevel() {
+export default function btnlevel(field) {
   const buttons = document.querySelector('.buttons');
   const btn = create('button', 'bntCapitulate btn', 'уровень', buttons, ['type', 'button']);
   const main = document.querySelector('main')
 
   btn.addEventListener('click', () => {
 
-    let popup = new Difficulty().init()
+    let popup = new Difficulty(field).init()
 
   })
 }

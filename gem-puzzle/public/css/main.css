@@ -35,14 +35,54 @@ main {
   font-family: "Gasrux";
 }
 
+.score{
+  display: flex;
+  width: 500px;
+  justify-content: space-between;
+  margin: 0 auto;
+  font-family: "Gasrux";
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.record{
+  cursor: pointer;
+}
+
+.times{
+  width: 90px;
+  text-align: center;
+}
+
+.steps{
+  width: 150px;
+  text-align: right;
+}
+
+.record:hover{
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
+}
+
+.record:active{
+  transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -moz-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  -o-transform: scale(0.9);
+}
 
 .cell {
   display: flex;
   box-sizing: border-box;
   font-family: "Gasrux", cursive;
-  font-size: 26px;
+  font-size: 25px;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 0;
   background-color: white;
   border: 1px solid black;
   border: .5em solid rgba(0, 0, 0, 0);
@@ -89,14 +129,14 @@ main {
 }
 
 .buttons {
-  width: 400px;
+  width: 500px;
   height: 110px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 50px);
   grid-gap: 5px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   overflow: hidden;
 }
 
@@ -108,14 +148,14 @@ main {
   overflow-wrap: normal;
   font-family: "Gasrux", cursive;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 26px;
   background-color: transparent;
   border: 1px solid black;
   box-shadow: 0 0 0 60px rgba(0, 0, 0, 0) inset, .1em .1em .2em gray;
   border-radius: 3px;
   outline: none;
   cursor: pointer;
-  letter-spacing: 1.2px;
+  letter-spacing: 0;
 }
 
 
