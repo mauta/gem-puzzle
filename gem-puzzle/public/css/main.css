@@ -93,12 +93,60 @@ main {
   position: relative;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -ms-transition: all 0.3s;
-  -o-transition: all 0.3s;
   cursor: pointer;
+
+}
+
+.moveRight{
+  transform: translateX(103%);
+  transition: all 0.2s;
+  -webkit-transform: translateX(103%);
+  -moz-transform: translateX(103%);
+  -ms-transform: translateX(103%);
+  -o-transform: translateX(103%);
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
+}
+
+.moveLeft{
+  transform: translateX(-103%);
+  transition: all 0.2s;
+  -webkit-transform: translateX(-103%);
+  -moz-transform: translateX(-103%);
+  -ms-transform: translateX(-103%);
+  -o-transform: translateX(-103%);
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
+}
+
+.moveDown{
+  transform: translateY(103%);
+  transition: all 0.2s;
+  -webkit-transform: translateY(103%);
+  -moz-transform: translateY(103%);
+  -ms-transform: translateY(103%);
+  -o-transform: translateY(103%);
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
+}
+
+.moveUp{
+  transform: translateY(-103%);
+  transition: all 0.2s;
+  -webkit-transform: translateY(-103%);
+  -moz-transform: translateY(-103%);
+  -ms-transform: translateY(-103%);
+  -o-transform: translateY(-103%);
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
 }
 
 .block:hover {
@@ -112,7 +160,6 @@ main {
   background-color: white;
   box-shadow: 0 0 0 6px rgba(0, 0, 0, .05);
 }
-
 
 .field {
   margin: 0 auto;

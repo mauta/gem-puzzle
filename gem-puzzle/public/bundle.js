@@ -109,7 +109,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function btnAddition() {
+function btnAddition(field) {
   const buttons = document.querySelector('.buttons');
   const btn = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'bntCapitulate btn', 'плюшки', buttons, ['type', 'button']);
   let isOpenAdds = false
@@ -117,9 +117,9 @@ function btnAddition() {
   btn.addEventListener('click', () => {
 
     if (!isOpenAdds) {
-      Object(_save_js__WEBPACK_IMPORTED_MODULE_1__["default"])();
-      Object(_load_js__WEBPACK_IMPORTED_MODULE_2__["default"])();
-      Object(_level_js__WEBPACK_IMPORTED_MODULE_3__["default"])();
+      Object(_save_js__WEBPACK_IMPORTED_MODULE_1__["default"])(field);
+      Object(_load_js__WEBPACK_IMPORTED_MODULE_2__["default"])(field);
+      Object(_level_js__WEBPACK_IMPORTED_MODULE_3__["default"])(field);
       Object(_sound_js__WEBPACK_IMPORTED_MODULE_4__["btnSound"])();
       isOpenAdds = !isOpenAdds
     } else {
@@ -193,6 +193,115 @@ class Cell {
 
 /***/ }),
 
+/***/ "./src/blocks/difficulty.js":
+/*!**********************************!*\
+  !*** ./src/blocks/difficulty.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Difficulty; });
+/* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
+/* harmony import */ var _radiobtn_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./radiobtn.js */ "./src/blocks/radiobtn.js");
+/* harmony import */ var _field_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./field.js */ "./src/blocks/field.js");
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/extensions */
+
+
+
+
+
+
+class Difficulty {
+  constructor(field) {
+    this.main = document.querySelector('main');
+    this.field = field;
+  }
+
+  init() {
+    this.popup = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'dark-screen', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'popup', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('h2', 'title', 'Выбор сложности')), this.main)
+    this.level = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('form', 'level-kind', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'form-wrap'), null, ['method', 'GET'])
+    this.popup.firstChild.appendChild(this.level)
+
+    for (let i = 0; i < 6; i++) {
+      let item = new _radiobtn_js__WEBPACK_IMPORTED_MODULE_1__["default"]('radio', 'lavel', i + 3, 'input input-level', `${i+3} x ${i+3}`, this.level)
+      item.span.classList.add('radio-level')
+      item.input.setAttribute('checked', true)
+      this.level.firstChild.appendChild(item.label)
+    }
+
+    this.level.appendChild(Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'form-wrap'))
+    let item1 = new _radiobtn_js__WEBPACK_IMPORTED_MODULE_1__["default"]('radio', 'kind', 'kind-img', 'input input-kind', 'картинки', this.level)
+    item1.span.classList.add('radio-kind')
+    item1.label.classList.add('label-kind')
+    item1.input.setAttribute('checked', true)
+    this.level.lastChild.appendChild(item1.label)
+
+    let item2 = new _radiobtn_js__WEBPACK_IMPORTED_MODULE_1__["default"]('radio', 'kind', 'kind-digit', 'input input-kind', 'цифры', this.level)
+    item2.span.classList.add('radio-kind')
+    item2.label.classList.add('label-kind')
+    item2.input.setAttribute('checked', true)
+    this.level.lastChild.appendChild(item2.label)
+
+    let item3 = new _radiobtn_js__WEBPACK_IMPORTED_MODULE_1__["default"]('radio', 'kind', 'kind-both', 'input input-kind', 'картинки и цифры', this.level)
+    item3.span.classList.add('radio-kind')
+    item3.label.classList.add('label-kind')
+    item3.input.setAttribute('checked', true)
+    this.level.lastChild.appendChild(item3.label)
+
+    // let btnsubmit = create('button', 'btn popup-btn', 'применить', this.level, ['type', 'submit'])
+
+    let btnsubmit = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'btn popup-btn', 'применить', this.level, ['type', 'button'])
+    this.level.appendChild(btnsubmit)
+
+    let btnclose = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'close-btn', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'visually-hidden', close), null, ['type', 'button'])
+    this.popup.firstChild.appendChild(btnclose)
+
+
+    let check = document.querySelectorAll('.input-level');
+    let check2 = document.querySelectorAll('.input-kind');
+    let level = 8;
+    let kind = 'kind-both';
+
+
+    for (let i = 0; i < check.length; i++) {
+      check[i].addEventListener('click', function (event) {
+        level = check[i].value
+      });
+    }
+    for (let i = 0; i < check2.length; i++) {
+      check2[i].addEventListener('click', function (event) {
+        kind = check2[i].value
+      });
+    }
+
+    function closePopup(popup) {
+      popup.remove()
+    }
+
+    console.log(this.field)
+
+
+    btnsubmit.addEventListener('click', () => {
+      console.log(this.field)
+      this.field.delete()
+      this.field.init(level);
+      this.field.draw(true);
+      closePopup(this.popup)
+    })
+
+    btnclose.addEventListener('click', () => {
+      closePopup(this.popup)
+    })
+
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/blocks/field.js":
 /*!*****************************!*\
   !*** ./src/blocks/field.js ***!
@@ -206,8 +315,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
 /* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cell.js */ "./src/blocks/cell.js");
 /* harmony import */ var _sound_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sound.js */ "./src/blocks/sound.js");
+/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/extensions */
+
+
 
 
 
@@ -217,14 +329,28 @@ __webpack_require__.r(__webpack_exports__);
 class Field {
   constructor(size = 4) {
     this.size = size;
+    this.wrap = document.querySelector('.field-wrap');
+    this.stepsCounter = 0;
+    this.timeCounter = 0;
+    this.timerStop = '';
+    this.GameSave = [];
+    this.steps = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'steps', `${this.stepsCounter} шагов`)
+    this.time = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'times', `${this.timeCounter}`)
+    this.score = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'score', [Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'record', 'рекорды'), this.steps, this.time], this.wrap);
+    this.field = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'field', null, this.wrap);
+    this.load = false;
+    this.empty = {
+      value: this.size * this.size,
+      left: this.size,
+      top: this.size
+    }
   }
 
-  init() {
-    const main = document.querySelector('main');
-    this.field = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'field', null, main);
+  init(size) {
+    this.size = size || this.size;
     this.field.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
     this.field.style.gridTemplateRows = `repeat(${this.size}, 1fr)`;
-    document.body.append(main);
+
     return this;
   }
 
@@ -238,81 +364,160 @@ class Field {
     return numbers
   }
 
+  step() {
+    this.stepsCounter++
+    this.steps.textContent = `${this.stepsCounter} шагов`;
+  }
+
+  timer() {
+    this.timeCounter++
+    let sec = this.timeCounter % 60
+    let min = Math.floor(this.timeCounter / 60)
+    this.time.textContent = `${min} : ${sec}`
+  }
+
+  winner() {
+    let name = prompt('вы победили! \n введите имя:');
+    let winner = {
+      winName: name,
+      winLevel: this.size,
+      winStep: this.stepsCounter,
+      winTime: this.timeCounter
+    }
+    let record = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('records')
+    if (record === null) {
+      record = [winner];
+    } else {
+      record.push(winner);
+    }
+    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["set"])('records', record);
+  }
+
   draw(isNew) {
+    this.steps.textContent = `${this.stepsCounter} шагов`;
+    let isWinner = false;
     let countCell = this.size * this.size;
-    let numbers
-    const empty = {
-      value: countCell - 1,
+    let numbers;
+    this.empty = {
+      value: this.size * this.size,
       left: this.size,
       top: this.size
-    }
+   }
     this.cells = [];
 
     if (isNew) {
       numbers = this.generate();
+      for (let i = 0; i < countCell - 1; i++) {
+        const left = i % this.size + 1;
+        const top = Math.ceil((i + 1) / this.size);
+        const value = numbers[i];
+        const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
+        this.cells.push({
+          value: value,
+          left: left,
+          top: top,
+          element: this.field.lastChild
+        });
+      }
     } else {
-      numbers = localStorage.getItem('currentGame').split(',')
+      if (this.load) {
+        let save = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('longGame');
+        this.empty = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('empty');
+        save.forEach((item) => {
+          const left = item.left;
+          const top = item.top;
+          const value = item.value;
+          const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
+          this.cells.push({
+            value: value,
+            left: left,
+            top: top,
+            element: this.field.lastChild
+          });
+        })
+        this.load = false;
+      } else {
+        numbers = localStorage.getItem('currentGame').split(',')
+        for (let i = 0; i < countCell - 1; i++) {
+          const left = i % this.size + 1;
+          const top = Math.ceil((i + 1) / this.size);
+          const value = numbers[i];
+          const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
+          this.cells.push({
+            value: value,
+            left: left,
+            top: top,
+            element: this.field.lastChild
+          });
+        }
+      }
+
     }
+
+
+
+
     const move = (item) => {
-      const leftDiff = Math.abs(empty.left - item.left);
-      const topDiff = Math.abs(empty.top - item.top);
+      const leftDiff = Math.abs(this.empty.left - item.left);
+      const topDiff = Math.abs(this.empty.top - item.top);
       const cellMoved = item;
-      let countRight = 0
+      let countRight = 0;
+
 
       if (leftDiff + topDiff > 1) {
         return;
       } else {
-        const emptyLeft = empty.left;
-        const emptyTop = empty.top;
-        empty.left = cellMoved.left;
-        empty.top = cellMoved.top;
+        const emptyLeft = this.empty.left;
+        const emptyTop = this.empty.top;
+        this.empty.left = cellMoved.left;
+        this.empty.top = cellMoved.top;
         cellMoved.left = emptyLeft;
         cellMoved.top = emptyTop;
         cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
         cellMoved.element.style.gridRowStart = `${emptyTop}`;
+        let isSoundOn = Object(_sound_js__WEBPACK_IMPORTED_MODULE_2__["isSound"])();
+        if (isSoundOn) {
+          const audio = document.querySelector('.audio');
+          audio.currentTime = 0;
+          audio.play();
+        }
       }
 
       for (let i = 0; i < countCell - 1; i++) {
         let position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
-
-        if (position == this.cells[i].value) {
+        if (position === this.cells[i].value) {
           countRight++;
           this.cells[i].element.style.opacity = '0.8'
         } else {
           this.cells[i].element.style.opacity = '1'
         }
-
         if (countRight === countCell - 1) {
           this.cells.forEach(el => el.element.style.opacity = '0.1')
+          clearInterval(this.timerStop);
+          isWinner = true;
         }
       }
-    }
+      this.step();
 
-    for (let i = 0; i < countCell - 1; i++) {
-      const left = i % this.size + 1;
-      const top = Math.ceil((i + 1) / this.size);
-      const value = numbers[i];
-      const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
-      this.cells.push({
-        value: value,
-        left: left,
-        top: top,
-        element: this.field.lastChild
-      });
+      console.log(this.cells[5].element)
     }
 
     this.cells.forEach(item => item.element.addEventListener('click', () => {
       move(item);
-      let isSoundOn = Object(_sound_js__WEBPACK_IMPORTED_MODULE_2__["isSound"])();
-      if (isSoundOn) {
-        const audio = document.querySelector('.audio');
-        audio.currentTime = 0;
-        audio.play();
+      if (isWinner) {
+        this.winner();
       }
     }));
+
+    this.timerStop = setInterval(() => {
+      this.timer();
+    }, 1000)
   }
 
   delete() {
+    this.stepsCounter = 0;
+    this.timeCounter = 0;
+    clearInterval(this.timerStop);
     while (this.field.firstChild) {
       this.field.removeChild(this.field.firstChild)
     }
@@ -334,17 +539,19 @@ class Field {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return btnlevel; });
 /* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
+/* harmony import */ var _difficulty_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./difficulty.js */ "./src/blocks/difficulty.js");
 /* eslint-disable import/extensions */
 
 
-function btnlevel() {
+
+function btnlevel(field) {
   const buttons = document.querySelector('.buttons');
   const btn = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'bntCapitulate btn', 'уровень', buttons, ['type', 'button']);
   const main = document.querySelector('main')
 
   btn.addEventListener('click', () => {
 
-    // const popup = create('div', 'popup', 'уровень', main);
+    let popup = new _difficulty_js__WEBPACK_IMPORTED_MODULE_1__["default"](field).init()
 
   })
 }
@@ -363,17 +570,23 @@ function btnlevel() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return btnLoad; });
 /* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
+/* harmony import */ var _field_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field.js */ "./src/blocks/field.js");
+/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
 /* eslint-disable import/extensions */
 
 
 
 
-function btnLoad() {
+
+
+function btnLoad(field) {
   const buttons = document.querySelector('.buttons');
   const btn = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'bntCapitulate btn', 'загрузить', buttons, ['type', 'button']);
 
   btn.addEventListener('click', () => {
-    console.log('я еще не работаю, я маленькая')
+    field.load = true;
+    field.delete()
+    field.draw(false);
   })
 }
 
@@ -403,9 +616,41 @@ function btnNewGame(field) {
   const btn = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'bntNewGame btn', 'новая', buttons, ['type', 'button']);
 
   btn.addEventListener('click', () => {
+
     field.delete()
     field.draw(true);
   })
+}
+
+
+/***/ }),
+
+/***/ "./src/blocks/radiobtn.js":
+/*!********************************!*\
+  !*** ./src/blocks/radiobtn.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return RadioInput; });
+/* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
+/* eslint-disable import/extensions */
+
+
+class RadioInput {
+  constructor(type, name, value, classname, inner, parent) {
+    this.inner = inner;
+    this.name = name;
+    this.value = value;
+    this.type = type;
+    this.classmame = classname;
+    this.parent = parent;
+    this.label = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('label', 'label', `${this.inner}`);
+    this.input = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('input', this.classmame, null, this.label, ['name', this.name], ['type', this.type], ['value', this.value]);
+    this.span = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'radio', null, this.label)
+  }
 }
 
 
@@ -454,17 +699,21 @@ function restart(field) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return btnSave; });
 /* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
+/* harmony import */ var _field_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field.js */ "./src/blocks/field.js");
+/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
 /* eslint-disable import/extensions */
 
 
 
 
-function btnSave() {
+
+function btnSave(field) {
   const buttons = document.querySelector('.buttons');
   const btn = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'bntCapitulate btn', 'сохранить', buttons, ['type', 'button']);
 
   btn.addEventListener('click', () => {
-    console.log('я еще не работаю, я маленькая')
+    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('longGame', field.cells)
+    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('empty', field.empty)
   })
 }
 
@@ -527,7 +776,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _blocks_restart_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./blocks/restart.js */ "./src/blocks/restart.js");
 /* harmony import */ var _blocks_capitulate_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./blocks/capitulate.js */ "./src/blocks/capitulate.js");
 /* harmony import */ var _blocks_addition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./blocks/addition.js */ "./src/blocks/addition.js");
+/* harmony import */ var _blocks_radiobtn_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./blocks/radiobtn.js */ "./src/blocks/radiobtn.js");
+/* harmony import */ var _blocks_difficulty_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./blocks/difficulty.js */ "./src/blocks/difficulty.js");
 /* eslint-disable import/extensions */
+
+
 
 
 
@@ -537,16 +790,23 @@ __webpack_require__.r(__webpack_exports__);
 
 const START_SIZE = 4;
 const isNew = true
-let field = new _blocks_field_js__WEBPACK_IMPORTED_MODULE_0__["default"](START_SIZE);
+
 const main = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_1__["default"])('main', '', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_1__["default"])('h1', 'title', 'Gem Puzzle'));
 document.body.prepend(main);
 
-const buttons = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_1__["default"])('div', 'buttons', null, main);
+const fieldWrap = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_1__["default"])('div', 'field-wrap', null, main);
 
+let field = new _blocks_field_js__WEBPACK_IMPORTED_MODULE_0__["default"](START_SIZE);
+
+const buttons = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_1__["default"])('div', 'buttons', null, main);
 Object(_blocks_newgame_js__WEBPACK_IMPORTED_MODULE_2__["default"])(field);
 Object(_blocks_restart_js__WEBPACK_IMPORTED_MODULE_3__["default"])(field);
 Object(_blocks_capitulate_js__WEBPACK_IMPORTED_MODULE_4__["default"])(field)
-Object(_blocks_addition_js__WEBPACK_IMPORTED_MODULE_5__["default"])()
+Object(_blocks_addition_js__WEBPACK_IMPORTED_MODULE_5__["default"])(field)
+
+
+main.append(fieldWrap);
+
 field.init();
 field.draw(isNew);
 
@@ -598,7 +858,7 @@ function create(el, classNames, child, parent, ...dataAttr) {
       if (attrValue === '') {
         element.setAttribute(attrName, '');
       }
-      if (attrName.match(/value|id|placeholder|cols|rows|autocorrect|spellcheck/)) {
+      if (attrName.match(/value|id|type|name|placeholder|cols|rows|autocorrect|spellcheck/)) {
         element.setAttribute(attrName, attrValue);
       } else {
         element.dataset[attrName] = attrValue;
@@ -606,6 +866,33 @@ function create(el, classNames, child, parent, ...dataAttr) {
     });
   }
   return element;
+}
+
+
+/***/ }),
+
+/***/ "./src/utils/storage.js":
+/*!******************************!*\
+  !*** ./src/utils/storage.js ***!
+  \******************************/
+/*! exports provided: set, get, del */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set", function() { return set; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get", function() { return get; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "del", function() { return del; });
+function set(name, value) {
+  window.localStorage.setItem(name, JSON.stringify(value));
+}
+
+function get(name, subst = null) {
+  return JSON.parse(window.localStorage.getItem(name) || subst);
+}
+
+function del(name) {
+  localStorage.removeItem(name);
 }
 
 

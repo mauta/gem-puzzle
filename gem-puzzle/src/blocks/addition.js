@@ -14,8 +14,8 @@ export default function btnAddition(field) {
   btn.addEventListener('click', () => {
 
     if (!isOpenAdds) {
-      btnSave();
-      btnLoad();
+      btnSave(field);
+      btnLoad(field);
       btnLevel(field);
       btnSound();
       isOpenAdds = !isOpenAdds

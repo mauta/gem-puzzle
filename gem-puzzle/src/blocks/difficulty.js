@@ -73,11 +73,7 @@ export default class Difficulty {
       popup.remove()
     }
 
-    console.log(this.field)
-
-
     btnsubmit.addEventListener('click', () => {
-      console.log(this.field)
       this.field.delete()
       this.field.init(level);
       this.field.draw(true);
