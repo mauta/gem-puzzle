@@ -215,20 +215,20 @@ export default class Field {
         item.element.removeEventListener('transitionend', animateUp);
       }
 
-      if (leftDiff === 1) {
+      if (leftDiff === 1 && topDiff === 0) {
         item.element.classList.add('moveRight')
         item.element.addEventListener('transitionend', animateRight);
       }
 
-      if (leftDiff === -1) {
+      if (leftDiff === -1 && topDiff === 0) {
         item.element.classList.add('moveLeft')
         item.element.addEventListener('transitionend', animateLeft);
       }
-      if (topDiff === 1) {
+      if (topDiff === 1 && leftDiff === 0) {
         item.element.classList.add('moveDown')
         item.element.addEventListener('transitionend', animateDown);
       }
-      if (topDiff === -1) {
+      if (topDiff === -1 && leftDiff === 0) {
         item.element.classList.add('moveUp')
         item.element.addEventListener('transitionend', animateUp);
       }

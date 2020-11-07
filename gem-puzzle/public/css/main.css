@@ -99,54 +99,54 @@ main {
 
 .moveRight{
   transform: translateX(103%);
-  transition: all 0.2s;
+  transition: all 0.3s;
   -webkit-transform: translateX(103%);
   -moz-transform: translateX(103%);
   -ms-transform: translateX(103%);
   -o-transform: translateX(103%);
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
 }
 
 .moveLeft{
   transform: translateX(-103%);
-  transition: all 0.2s;
+  transition: all 0.3s;
   -webkit-transform: translateX(-103%);
   -moz-transform: translateX(-103%);
   -ms-transform: translateX(-103%);
   -o-transform: translateX(-103%);
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
 }
 
 .moveDown{
   transform: translateY(103%);
-  transition: all 0.2s;
+  transition: all 0.3s;
   -webkit-transform: translateY(103%);
   -moz-transform: translateY(103%);
   -ms-transform: translateY(103%);
   -o-transform: translateY(103%);
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
 }
 
 .moveUp{
   transform: translateY(-103%);
-  transition: all 0.2s;
+  transition: all 0.3s;
   -webkit-transform: translateY(-103%);
   -moz-transform: translateY(-103%);
   -ms-transform: translateY(-103%);
   -o-transform: translateY(-103%);
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
 }
 
 .block:hover {
