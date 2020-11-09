@@ -82,6 +82,65 @@ export default class Field {
     set('records', record);
   }
 
+  dragDrop() {
+    let emptyCell = create('div', 'empty', null, this.field)
+    emptyCell.style.gridColumnStart = `${this.empty.left}`;
+    emptyCell.style.gridRowStart = `${this.empty.top}`;
+
+    this.cells.forEach((item) => {
+      const leftDiff = Math.abs(this.empty.left - item.left);
+      const topDiff = Math.abs(this.empty.top - item.top);
+
+      if (leftDiff + topDiff > 1) {
+        return;
+      } else {
+        item.element.setAttribute('draggable', true);
+        item.element.style.cursor = 'move';
+      }
+
+      item.element.addEventListener(`dragstart`, (evt) => {
+        evt.target.classList.add(`selected`);
+      });
+
+      item.element.addEventListener(`dragend`, (evt) => {
+        evt.target.classList.remove(`selected`);
+      });
+
+      const drop = () => {
+        console.log('я тащу')
+        const emptyLeft = this.empty.left;
+        const emptyTop = this.empty.top;
+        this.empty.left = item.left;
+        this.empty.top = item.top;
+        item.left = emptyLeft;
+        item.top = emptyTop;
+        item.element.style.gridColumnStart = `${emptyLeft}`;
+        item.element.style.gridRowStart = `${emptyTop}`;
+        // let isSoundOn = isSound();
+        // if (isSoundOn) {
+        //   const audio = document.querySelector('.audio');
+        //   audio.currentTime = 0;
+        //   audio.play();
+        // }
+        this.cells.forEach((item) => {
+          item.element.removeAttribute('draggable')
+          item.element.style.cursor = 'pointer';
+        });
+        emptyCell.removeEventListener(`drop`, drop);
+        emptyCell.remove();
+        // this.dragDrop();
+      }
+
+      emptyCell.addEventListener(`drop`, drop);
+
+      this.field.addEventListener(`dragover`, (evt) => {
+        evt.preventDefault();
+      });
+
+
+    });
+  }
+
   draw(isNew) {
     this.steps.textContent = `${this.stepsCounter} шагов`;
     let isWinner = false;
@@ -143,9 +202,6 @@ export default class Field {
 
     }
 
-
-
-
     const move = (item) => {
       const leftDiff = Math.abs(this.empty.left - item.left);
       const topDiff = Math.abs(this.empty.top - item.top);
@@ -186,6 +242,8 @@ export default class Field {
       }
       this.step();
     }
+
+    this.dragDrop();
 
     this.cells.forEach(item => item.element.addEventListener('click', () => {
       let leftDiff = this.empty.left - item.left;
