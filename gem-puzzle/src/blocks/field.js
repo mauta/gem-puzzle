@@ -34,6 +34,7 @@ export default class Field {
       top: this.size
     };
     this.emptyCell = create('div', 'empty', null, this.field);
+    this.numbers = [];
   }
 
   init(size) {
@@ -50,7 +51,30 @@ export default class Field {
       .map(x => x + 1)
       .sort(() => Math.random() - 0.5)
     localStorage.setItem('currentGame', numbers);
-    return numbers
+
+
+    const solvedCounter = (arr) => {
+      let dlina = arr.length;
+      let counter = 0;
+      for (let i = 0; i < dlina; i++) {
+        let a = arr[i];
+        for (let j = i + 1; j < dlina - i; j++) {
+          if (a > arr[j]) {
+            counter++;
+          }
+        }
+      }
+      return counter;
+    };
+
+    if (solvedCounter(numbers) % 2 === 0) {
+      console.log('подошло');
+      this.numbers = numbers;
+    } else {
+      console.log('не подошло');
+      this.generate();
+    }
+
   }
 
   step() {
@@ -148,7 +172,7 @@ export default class Field {
     this.steps.textContent = `${this.stepsCounter} шагов`;
     let isWinner = false;
     let countCell = this.size * this.size;
-    let numbers;
+
     this.empty = {
       value: this.size * this.size,
       left: this.size,
@@ -160,11 +184,11 @@ export default class Field {
     this.emptyCell.style.gridRowStart = this.empty.top;
 
     if (isNew) {
-      numbers = this.generate();
+      this.generate();
       for (let i = 0; i < countCell - 1; i++) {
         const left = i % this.size + 1;
         const top = Math.ceil((i + 1) / this.size);
-        const value = numbers[i];
+        const value = this.numbers[i];
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
           value: value,
@@ -191,11 +215,11 @@ export default class Field {
         })
         this.load = false;
       } else {
-        numbers = localStorage.getItem('currentGame').split(',')
+        this.numbers = localStorage.getItem('currentGame').split(',')
         for (let i = 0; i < countCell - 1; i++) {
           const left = i % this.size + 1;
           const top = Math.ceil((i + 1) / this.size);
-          const value = numbers[i];
+          const value = this.numbers[i];
           const cell = new Cell(value, this.field, top, left);
           this.cells.push({
             value: value,
