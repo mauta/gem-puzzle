@@ -120,6 +120,7 @@ export default class Field {
       });
       this.emptyCell.removeEventListener(`drop`, drop);
       this.setDraggable();
+      this.step();
     };
 
     this.emptyCell.addEventListener(`drop`, drop);
@@ -127,11 +128,14 @@ export default class Field {
 
     item.element.addEventListener(`dragstart`, (evt) => {
       evt.target.classList.add(`selected`);
+      setTimeout(() => {
+        evt.target.style.display = 'none'
+      }, 0);
     });
 
     item.element.addEventListener(`dragend`, (evt) => {
       evt.target.classList.remove(`selected`);
-
+      evt.target.style.display = 'flex'
     });
 
     this.field.addEventListener(`dragover`, (evt) => {
