@@ -23,8 +23,8 @@ export default class Field {
     this.timeCounter = 0;
     this.timerStop = '';
     this.GameSave = [];
-    this.steps = create('div', 'steps', `${this.stepsCounter} шагов`)
-    this.time = create('div', 'times', `${this.timeCounter}`)
+    this.steps = create('div', 'steps', `${this.stepsCounter} шагов`);
+    this.time = create('div', 'times', `${this.timeCounter}`);
     this.score = create('div', 'score', [create('div', 'record', 'рекорды'), this.steps, this.time], this.wrap);
     this.field = create('div', 'field', null, this.wrap);
     this.load = false;
@@ -32,7 +32,8 @@ export default class Field {
       value: this.size * this.size,
       left: this.size,
       top: this.size
-    }
+    };
+    this.emptyCell = create('div', 'empty', null, this.field);
   }
 
   init(size) {
@@ -49,7 +50,6 @@ export default class Field {
       .map(x => x + 1)
       .sort(() => Math.random() - 0.5)
     localStorage.setItem('currentGame', numbers);
-
     return numbers
   }
 
@@ -82,61 +82,60 @@ export default class Field {
     set('records', record);
   }
 
-  dragDrop() {
-    let emptyCell = create('div', 'empty', null, this.field)
-    emptyCell.style.gridColumnStart = `${this.empty.left}`;
-    emptyCell.style.gridRowStart = `${this.empty.top}`;
-
+  setDraggable() {
     this.cells.forEach((item) => {
       const leftDiff = Math.abs(this.empty.left - item.left);
       const topDiff = Math.abs(this.empty.top - item.top);
 
       if (leftDiff + topDiff > 1) {
-        return;
+        item.element.removeAttribute('draggable');
       } else {
         item.element.setAttribute('draggable', true);
-        item.element.style.cursor = 'move';
       }
+    });
 
-      item.element.addEventListener(`dragstart`, (evt) => {
-        evt.target.classList.add(`selected`);
-      });
+    this.emptyCell.style.gridColumnStart = `${this.empty.left}`;
+    this.emptyCell.style.gridRowStart = `${this.empty.top}`;
+  }
 
-      item.element.addEventListener(`dragend`, (evt) => {
-        evt.target.classList.remove(`selected`);
-      });
+  dragDrop(item) {
+    const drop = () => {
+      const emptyLeft = this.empty.left;
+      const emptyTop = this.empty.top;
+      this.empty.left = item.left;
+      this.empty.top = item.top;
 
-      const drop = () => {
-        console.log('я тащу')
-        const emptyLeft = this.empty.left;
-        const emptyTop = this.empty.top;
-        this.empty.left = item.left;
-        this.empty.top = item.top;
-        item.left = emptyLeft;
-        item.top = emptyTop;
-        item.element.style.gridColumnStart = `${emptyLeft}`;
-        item.element.style.gridRowStart = `${emptyTop}`;
-        // let isSoundOn = isSound();
-        // if (isSoundOn) {
-        //   const audio = document.querySelector('.audio');
-        //   audio.currentTime = 0;
-        //   audio.play();
-        // }
-        this.cells.forEach((item) => {
-          item.element.removeAttribute('draggable')
-          item.element.style.cursor = 'pointer';
-        });
-        emptyCell.removeEventListener(`drop`, drop);
-        emptyCell.remove();
-        // this.dragDrop();
+      item.left = emptyLeft;
+      item.top = emptyTop;
+      item.element.style.gridColumnStart = `${emptyLeft}`;
+      item.element.style.gridRowStart = `${emptyTop}`;
+      let isSoundOn = isSound();
+      if (isSoundOn) {
+        const audio = document.querySelector('.audio');
+        audio.currentTime = 0;
+        audio.play();
       }
-
-      emptyCell.addEventListener(`drop`, drop);
-
-      this.field.addEventListener(`dragover`, (evt) => {
-        evt.preventDefault();
+      this.cells.forEach((el) => {
+        el.element.removeAttribute('draggable')
       });
+      this.emptyCell.removeEventListener(`drop`, drop);
+      this.setDraggable();
+    };
 
+    this.emptyCell.addEventListener(`drop`, drop);
+
+
+    item.element.addEventListener(`dragstart`, (evt) => {
+      evt.target.classList.add(`selected`);
+    });
+
+    item.element.addEventListener(`dragend`, (evt) => {
+      evt.target.classList.remove(`selected`);
+
+    });
+
+    this.field.addEventListener(`dragover`, (evt) => {
+      evt.preventDefault();
 
     });
   }
@@ -152,6 +151,9 @@ export default class Field {
       top: this.size
     };
     this.cells = [];
+    this.field.append(this.emptyCell);
+    this.emptyCell.style.gridColumnStart = this.empty.left;
+    this.emptyCell.style.gridRowStart = this.empty.top;
 
     if (isNew) {
       numbers = this.generate();
@@ -199,8 +201,9 @@ export default class Field {
           });
         }
       }
-
     }
+
+    this.setDraggable();
 
     const move = (item) => {
       const leftDiff = Math.abs(this.empty.left - item.left);
@@ -218,12 +221,15 @@ export default class Field {
         cellMoved.top = emptyTop;
         cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
         cellMoved.element.style.gridRowStart = `${emptyTop}`;
+        this.emptyCell.style.gridColumnStart = this.empty.left;
+        this.emptyCell.style.gridRowStart = this.empty.top;
         let isSoundOn = isSound();
         if (isSoundOn) {
           const audio = document.querySelector('.audio');
           audio.currentTime = 0;
           audio.play();
         }
+
       }
 
       for (let i = 0; i < countCell - 1; i++) {
@@ -241,13 +247,17 @@ export default class Field {
         }
       }
       this.step();
+      this.setDraggable();
     }
 
-    this.dragDrop();
+    this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
+      this.dragDrop(item);
+    }));
 
-    this.cells.forEach(item => item.element.addEventListener('click', () => {
+    this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       let leftDiff = this.empty.left - item.left;
       let topDiff = this.empty.top - item.top;
+
 
       function animateRight() {
         move(item);
