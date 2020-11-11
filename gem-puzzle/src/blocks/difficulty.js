@@ -60,28 +60,29 @@ export default class Difficulty {
 
     for (let i = 0; i < check.length; i++) {
       check[i].addEventListener('click', function (event) {
-        level = check[i].value
+        level = check[i].value;
       });
     }
     for (let i = 0; i < check2.length; i++) {
       check2[i].addEventListener('click', function (event) {
-        kind = check2[i].value
+        kind = check2[i].value;
       });
     }
 
     function closePopup(popup) {
-      popup.remove()
+      popup.remove();
     }
 
     btnsubmit.addEventListener('click', () => {
-      this.field.delete()
+      this.field.kind = kind;
+      this.field.delete();
       this.field.init(level);
       this.field.draw(true);
-      closePopup(this.popup)
+      closePopup(this.popup);
     })
 
     btnclose.addEventListener('click', () => {
-      closePopup(this.popup)
+      closePopup(this.popup);
     })
 
   }

@@ -38,6 +38,8 @@ export default class Field {
     };
     this.emptyCell = create('div', 'empty', null, this.field);
     this.numbers = [];
+    this.kind = 'kind-digit';
+    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 8)}.jpg)`;
   }
 
   init(size) {
@@ -52,7 +54,7 @@ export default class Field {
     let countCell = this.size * this.size;
     const numbers = [...Array(countCell - 1).keys()]
       .map(x => x + 1)
-      // .sort(() => Math.random() - 0.5)
+      .sort(() => Math.random() - 0.5)
     localStorage.setItem('currentGame', numbers);
 
 
@@ -80,6 +82,7 @@ export default class Field {
     // }
 
     this.numbers = numbers;
+    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 8)}.jpg)`;
 
   }
 
@@ -211,6 +214,12 @@ export default class Field {
     };
     this.cells = [];
     this.field.append(this.emptyCell);
+    if (this.kind !== 'kind-digit') {
+      this.field.style.backgroundImage = this.backgroundImage;
+      this.field.style.backgroundSize = 'contain';
+      this.field.style.backgroundColor = 'rgba(255,255,255,0.7)';
+      this.field.style.backgroundBlendMode = 'overlay';
+    }
     this.emptyCell.style.gridColumnStart = this.empty.left;
     this.emptyCell.style.gridRowStart = this.empty.top;
 
@@ -262,6 +271,22 @@ export default class Field {
       }
     }
 
+    if (this.kind !== 'kind-digit') {
+      for (let i = 0; i < countCell - 1; i++) {
+        this.cells[i].element.style.backgroundImage = this.backgroundImage;
+        this.cells[i].element.style.backgroundRepiat = 'no-repiat';
+        let value = this.cells[i].value - 1;
+        let persent = 100 / (this.size - 1);
+        this.cells[i].element.style.backgroundPosition = `${value % this.size * persent}% ${Math.floor(value / this.size) * persent}%`;
+      }
+    }
+    if (this.kind === 'kind-img') {
+      for (let i = 0; i < countCell - 1; i++) {
+        this.cells[i].element.style.color = 'transparent'
+      }
+    }
+
+
     this.setDraggable();
 
     const move = (item) => {
@@ -295,9 +320,17 @@ export default class Field {
         let position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
         if (position === this.cells[i].value) {
           countRight++;
-          this.cells[i].element.style.opacity = '0.8'
+          if (this.kind === 'kind-digit') {
+            this.cells[i].element.style.opacity = '0.8'
+          } else {
+            this.cells[i].element.style.opacity = '1'
+          }
         } else {
-          this.cells[i].element.style.opacity = '1'
+          if (this.kind === 'kind-digit') {
+            this.cells[i].element.style.opacity = '1'
+          } else {
+            this.cells[i].element.style.opacity = '0.8'
+          }
         }
         if (countRight === countCell - 1) {
           this.cells.forEach(el => el.element.style.opacity = '0.05')
@@ -371,8 +404,8 @@ export default class Field {
       this.timer();
     }, 1000)
 
-    this.record.addEventListener('click',()=>{
-       sortrecords()
+    this.record.addEventListener('click', () => {
+      sortrecords()
     })
   }
 
