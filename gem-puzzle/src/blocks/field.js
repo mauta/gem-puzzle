@@ -2,7 +2,9 @@
 /* eslint-disable import/extensions */
 
 import create from '../utils/create.js';
+import ascname from './ascname.js';
 import Cell from './cell.js';
+import sortrecords from './sortrecords.js'
 import {
   btnSound,
   isSound
@@ -25,7 +27,8 @@ export default class Field {
     this.GameSave = [];
     this.steps = create('div', 'steps', `${this.stepsCounter} шагов`);
     this.time = create('div', 'times', `${this.timeCounter}`);
-    this.score = create('div', 'score', [create('div', 'record', 'рекорды'), this.steps, this.time], this.wrap);
+    this.record = create('div', 'record', 'рекорды');
+    this.score = create('div', 'score', [this.record, this.steps, this.time], this.wrap);
     this.field = create('div', 'field', null, this.wrap);
     this.load = false;
     this.empty = {
@@ -49,61 +52,69 @@ export default class Field {
     let countCell = this.size * this.size;
     const numbers = [...Array(countCell - 1).keys()]
       .map(x => x + 1)
-      .sort(() => Math.random() - 0.5)
+      // .sort(() => Math.random() - 0.5)
     localStorage.setItem('currentGame', numbers);
 
 
-    const solvedCounter = (arr) => {
-      let dlina = arr.length;
-      let counter = 0;
-      for (let i = 0; i < dlina; i++) {
-        let a = arr[i];
-        for (let j = i + 1; j < dlina - i; j++) {
-          if (a > arr[j]) {
-            counter++;
-          }
-        }
-      }
-      return counter;
-    };
+    // const solvedCounter = (arr) => {
+    //   let dlina = arr.length;
+    //   let counter = 0;
+    //   for (let i = 0; i < dlina; i++) {
+    //     let a = arr[i];
+    //     for (let j = i + 1; j < dlina - i; j++) {
+    //       if (arr[j] < a) {
+    //         counter++;
+    //       }
+    //     }
+    //   }
+    //   console.log(counter)
+    //   return counter;
+    // };
 
-    if (solvedCounter(numbers) % 2 === 0) {
-      console.log('подошло');
-      this.numbers = numbers;
-    } else {
-      console.log('не подошло');
-      this.generate();
-    }
+    // if (solvedCounter(numbers) % 2 === 0) {
+    //   console.log('подошло');
+    //   this.numbers = numbers;
+    // } else {
+    //   console.log('не подошло');
+    //   this.generate();
+    // }
+
+    this.numbers = numbers;
 
   }
 
   step() {
     this.stepsCounter++
-    this.steps.textContent = `${this.stepsCounter} шагов`;
+    let step = ''
+    let lastnumber = String(this.stepsCounter).slice(-1)
+    let last2number = String(this.stepsCounter).slice(-2, 1)
+    if (lastnumber === '1' && last2number !== '1') {
+      step = 'шаг'
+    } else if ((lastnumber === '2' || lastnumber === '3' || lastnumber === '4') && last2number !== '1') {
+      step = 'шага'
+    } else {
+      step = 'шагов'
+    }
+    this.steps.textContent = `${this.stepsCounter} ${step}`;
   }
 
   timer() {
-    this.timeCounter++
-    let sec = this.timeCounter % 60
-    let min = Math.floor(this.timeCounter / 60)
-    this.time.textContent = `${min} : ${sec}`
+    this.timeCounter++;
+    let sec = this.timeCounter % 60;
+    let min = Math.floor(this.timeCounter / 60);
+    this.time.textContent = `${min} : ${sec}`;
   }
 
   winner() {
-    let name = prompt('вы победили! \n введите имя:');
-    let winner = {
-      winName: name,
+
+    let winnerScore = {
+      winName: 'какой-то мужик',
       winLevel: this.size,
       winStep: this.stepsCounter,
       winTime: this.timeCounter
     }
-    let record = get('records')
-    if (record === null) {
-      record = [winner];
-    } else {
-      record.push(winner);
-    }
-    set('records', record);
+    ascname(winnerScore);
+
   }
 
   setDraggable() {
@@ -123,11 +134,13 @@ export default class Field {
   }
 
   dragDrop(item) {
+    let countCell = this.size * this.size;
     const drop = () => {
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
       this.empty.left = item.left;
       this.empty.top = item.top;
+      let countRight = 0;
 
       item.left = emptyLeft;
       item.top = emptyTop;
@@ -144,7 +157,26 @@ export default class Field {
       });
       this.emptyCell.removeEventListener(`drop`, drop);
       this.setDraggable();
-      this.step();
+
+
+      for (let i = 0; i < countCell - 1; i++) {
+        let position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
+        if (position === this.cells[i].value) {
+          countRight++;
+
+          this.cells[i].element.style.opacity = '0.8'
+        } else {
+          this.cells[i].element.style.opacity = '1'
+        }
+        if (countRight === countCell - 1) {
+          this.cells.forEach(el => el.element.style.opacity = '0.05')
+          clearInterval(this.timerStop);
+
+          const paused = setTimeout(() => {
+            this.winner()
+          }, 2000);
+        }
+      }
     };
 
     this.emptyCell.addEventListener(`drop`, drop);
@@ -170,7 +202,6 @@ export default class Field {
 
   draw(isNew) {
     this.steps.textContent = `${this.stepsCounter} шагов`;
-    let isWinner = false;
     let countCell = this.size * this.size;
 
     this.empty = {
@@ -269,13 +300,17 @@ export default class Field {
           this.cells[i].element.style.opacity = '1'
         }
         if (countRight === countCell - 1) {
-          this.cells.forEach(el => el.element.style.opacity = '0.1')
+          this.cells.forEach(el => el.element.style.opacity = '0.05')
           clearInterval(this.timerStop);
-          isWinner = true;
+
+          const paused = setTimeout(() => {
+            this.winner()
+          }, 1000);
         }
       }
       this.step();
       this.setDraggable();
+
     }
 
     this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
@@ -329,14 +364,16 @@ export default class Field {
         item.element.addEventListener('transitionend', animateUp);
       }
 
-      if (isWinner) {
-        this.winner();
-      }
+
     }));
 
     this.timerStop = setInterval(() => {
       this.timer();
     }, 1000)
+
+    this.record.addEventListener('click',()=>{
+       sortrecords()
+    })
   }
 
   delete() {
