@@ -1,11 +1,18 @@
 /* eslint-disable import/extensions */
 import create from '../utils/create.js';
 
-export default function capitulate() {
+export default function capitulate(field) {
   const buttons = document.querySelector('.buttons');
   const btn = create('button', 'bntCapitulate btn', 'сдаюсь', buttons, ['type', 'button']);
 
   btn.addEventListener('click', () => {
-    console.log('я еще не работаю, я маленькая');
+    const arr = [12, 8, 4];
+
+    for (let i = 0; i < arr[i]; i += 1) {
+      const item = field.cells.filter(el => el.value === arr[i]);
+      field.animatedList[i] = item;
+    }
+    field.animatedList = field.animatedList.flat();
+    field.animation();
   });
 }

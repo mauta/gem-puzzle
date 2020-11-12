@@ -30,10 +30,12 @@ export default class Field {
       left: this.size,
       top: this.size,
     };
+    this.countCell = this.size * this.size;
     this.emptyCell = create('div', 'empty', null, this.field);
     this.numbers = [];
     this.kind = 'kind-digit';
     this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 33)}.jpg)`;
+    this.animatedList = [];
   }
 
   init(size) {
@@ -45,10 +47,10 @@ export default class Field {
   }
 
   generate() {
-    const countCell = this.size * this.size;
-    const numbers = [...Array(countCell - 1).keys()]
+    this.countCell = this.size * this.size;
+    const numbers = [...Array(this.countCell - 1).keys()]
       .map(x => x + 1)
-      .sort(() => Math.random() - 0.5);
+    // .sort(() => Math.random() - 0.5);
     localStorage.setItem('currentGame', numbers);
 
     const solvedCounter = (arr) => {
@@ -56,7 +58,7 @@ export default class Field {
       let counter = 0;
       for (let i = 0; i < dlina; i += 1) {
         const a = arr[i];
-        for (let j = i + 1; j < dlina - i; j += 1) {
+        for (let j = i + 1; j < dlina; j += 1) {
           if (arr[j] < a) {
             counter += 1;
           }
@@ -125,7 +127,7 @@ export default class Field {
   }
 
   dragDrop(item) {
-    const countCell = this.size * this.size;
+    this.countCell = this.size * this.size;
     const drop = () => {
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
@@ -148,25 +150,25 @@ export default class Field {
       this.emptyCell.removeEventListener('drop', drop);
       this.setDraggable();
 
-
-      for (let i = 0; i < countCell - 1; i += 1) {
+      for (let i = 0; i < this.countCell - 1; i += 1) {
         const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
         if (position === this.cells[i].value) {
           countRight += 1;
-
-          this.cells[i].element.style.opacity = '0.8';
+          // eslint-disable-next-line no-unused-expressions
+          this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '0.8' : this.cells[i].element.style.opacity = '1';
         } else {
-          this.cells[i].element.style.opacity = '1';
+          // eslint-disable-next-line no-unused-expressions
+          this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
         }
-        if (countRight === countCell - 1) {
+        if (countRight === this.countCell - 1) {
           this.cells.forEach(el => el.element.style.opacity = '0.05');
           clearInterval(this.timerStop);
-
-          const paused = setTimeout(() => {
+          setTimeout(() => {
             this.winner();
           }, 2000);
         }
       }
+      this.step();
     };
 
     this.emptyCell.addEventListener('drop', drop);
@@ -188,9 +190,54 @@ export default class Field {
     });
   }
 
+  move(item) {
+    const leftDiff = Math.abs(this.empty.left - item.left);
+    const topDiff = Math.abs(this.empty.top - item.top);
+    const cellMoved = item;
+    let countRight = 0;
+    if ((leftDiff + topDiff) === 1) {
+      const emptyLeft = this.empty.left;
+      const emptyTop = this.empty.top;
+      this.empty.left = cellMoved.left;
+      this.empty.top = cellMoved.top;
+      cellMoved.left = emptyLeft;
+      cellMoved.top = emptyTop;
+      cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
+      cellMoved.element.style.gridRowStart = `${emptyTop}`;
+      this.emptyCell.style.gridColumnStart = this.empty.left;
+      this.emptyCell.style.gridRowStart = this.empty.top;
+      if (isSound()) {
+        const audio = document.querySelector('.audio');
+        audio.currentTime = 0;
+        audio.play();
+      }
+    }
+
+    for (let i = 0; i < this.countCell - 1; i += 1) {
+      const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
+      if (position === this.cells[i].value) {
+        countRight += 1;
+        // eslint-disable-next-line no-unused-expressions
+        this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '0.8' : this.cells[i].element.style.opacity = '1';
+      } else {
+        // eslint-disable-next-line no-unused-expressions
+        this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
+      }
+      if (countRight === this.countCell - 1) {
+        this.cells.forEach(el => el.element.style.opacity = '0');
+        clearInterval(this.timerStop);
+        setTimeout(() => {
+          this.winner();
+        }, 1000);
+      }
+    }
+    this.step();
+    this.setDraggable();
+  }
+
   draw(isNew) {
     this.steps.textContent = `${this.stepsCounter} шагов`;
-    const countCell = this.size * this.size;
+    this.countCell = this.size * this.size;
     this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 33)}.jpg)`;
 
     this.empty = {
@@ -211,7 +258,7 @@ export default class Field {
 
     if (isNew) {
       this.generate();
-      for (let i = 0; i < countCell - 1; i += 1) {
+      for (let i = 0; i < this.countCell - 1; i += 1) {
         const left = (i % this.size) + 1;
         const top = Math.ceil((i + 1) / this.size);
         const value = this.numbers[i];
@@ -248,7 +295,7 @@ export default class Field {
 
       } else {
         this.numbers = localStorage.getItem('currentGame').split(',');
-        for (let i = 0; i < countCell - 1; i += 1) {
+        for (let i = 0; i < this.countCell - 1; i += 1) {
           const left = (i % this.size) + 1;
           const top = Math.ceil((i + 1) / this.size);
           const value = this.numbers[i];
@@ -273,7 +320,7 @@ export default class Field {
         this.field.style.backgroundBlendMode = 'overlay';
         this.load = false;
       }
-      for (let i = 0; i < countCell - 1; i += 1) {
+      for (let i = 0; i < this.countCell - 1; i += 1) {
         this.cells[i].element.style.backgroundImage = this.backgroundImage;
         this.cells[i].element.style.backgroundRepiat = 'no-repiat';
         this.cells[i].element.style.backgroundSize = `${100 * this.size}%`;
@@ -283,66 +330,12 @@ export default class Field {
       }
     }
     if (this.kind === 'kind-img') {
-      for (let i = 0; i < countCell - 1; i += 1) {
+      for (let i = 0; i < this.countCell - 1; i += 1) {
         this.cells[i].element.style.color = 'transparent';
       }
     }
 
-
     this.setDraggable();
-
-    const move = (item) => {
-      const leftDiff = Math.abs(this.empty.left - item.left);
-      const topDiff = Math.abs(this.empty.top - item.top);
-      const cellMoved = item;
-      let countRight = 0;
-      if ((leftDiff + topDiff) === 1) {
-        const emptyLeft = this.empty.left;
-        const emptyTop = this.empty.top;
-        this.empty.left = cellMoved.left;
-        this.empty.top = cellMoved.top;
-        cellMoved.left = emptyLeft;
-        cellMoved.top = emptyTop;
-        cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
-        cellMoved.element.style.gridRowStart = `${emptyTop}`;
-        this.emptyCell.style.gridColumnStart = this.empty.left;
-        this.emptyCell.style.gridRowStart = this.empty.top;
-        if (isSound()) {
-          const audio = document.querySelector('.audio');
-          audio.currentTime = 0;
-          audio.play();
-        }
-      }
-
-      for (let i = 0; i < countCell - 1; i += 1) {
-        const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
-        if (position === this.cells[i].value) {
-          countRight += 1;
-          if (this.kind === 'kind-digit') {
-            this.cells[i].element.style.opacity = '0.8';
-          } else {
-            this.cells[i].element.style.opacity = '1';
-          }
-        } else {
-          if (this.kind === 'kind-digit') {
-            this.cells[i].element.style.opacity = '1';
-          } else {
-            this.cells[i].element.style.opacity = '0.8';
-          }
-        }
-        if (countRight === countCell - 1) {
-          this.cells.forEach(el => el.element.style.opacity = '0.05');
-          clearInterval(this.timerStop);
-
-          const paused = setTimeout(() => {
-            this.winner();
-          }, 1000);
-        }
-      }
-      this.step();
-      this.setDraggable();
-    };
-
     this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
       this.dragDrop(item);
     }));
@@ -351,29 +344,29 @@ export default class Field {
       let leftDiff = this.empty.left - item.left;
       let topDiff = this.empty.top - item.top;
 
-      function animateRight() {
-        move(item);
+      const animateRight = () => {
+        this.move(item);
         item.element.classList.remove('moveRight');
         item.element.removeEventListener('transitionend', animateRight);
-      }
+      };
 
-      function animateLeft() {
-        move(item);
+      const animateLeft = () => {
+        this.move(item);
         item.element.classList.remove('moveLeft');
         item.element.removeEventListener('transitionend', animateLeft);
-      }
+      };
 
-      function animateDown() {
-        move(item);
+      const animateDown = () => {
+        this.move(item);
         item.element.classList.remove('moveDown');
         item.element.removeEventListener('transitionend', animateDown);
-      }
+      };
 
-      function animateUp() {
-        move(item);
+      const animateUp = () => {
+        this.move(item);
         item.element.classList.remove('moveUp');
         item.element.removeEventListener('transitionend', animateUp);
-      }
+      };
 
       if (leftDiff === 1 && topDiff === 0) {
         item.element.classList.add('moveRight');
@@ -410,5 +403,57 @@ export default class Field {
     while (this.field.firstChild) {
       this.field.removeChild(this.field.firstChild);
     }
+  }
+
+  animation() {
+    console.log(this.animatedList);
+
+    let i = 0;
+    console.log(this.animatedList.length);
+    while (i < this.animatedList.length) {
+      let item = this.animatedList[i];
+      let leftDiff = this.empty.left - item.left;
+      let topDiff = this.empty.top - item.top;
+
+      function animateDown() {
+        console.log('я до мува');
+        this.move(item);
+        console.log('я после мува');
+        item.element.classList.remove('moveDown');
+        item.element.removeEventListener('transitionend', animateDown);
+        i = i++;
+      };
+
+      if (topDiff === 1 && leftDiff === 0) {
+        console.log('я ближайший');
+        item.element.classList.add('moveDown');
+        item.element.addEventListener('transitionend', animateDown);
+      };
+
+    }
+
+    // this.animatedList.forEach(item => {
+    //   console.log(item);
+    //   let leftDiff = this.empty.left - item.left;
+    //   let topDiff = this.empty.top - item.top;
+
+    //   // console.log('я до мува');
+    //   // move(item);
+    //   // console.log('я после мува');
+
+    //   const animateDown = () => {
+    //     console.log('я до мува');
+    //     move(item);
+    //     console.log('я после мува');
+    //     item.element.classList.remove('moveDown');
+    //     item.element.removeEventListener('transitionend', animateDown);
+    //   };
+
+    //   if (topDiff === 1 && leftDiff === 0) {
+    //     console.log('я ближайший');
+    //     item.element.classList.add('moveDown');
+    //     item.element.addEventListener('transitionend', animateDown);
+    //   };
+    // });
   }
 }

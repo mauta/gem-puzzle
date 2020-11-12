@@ -15,11 +15,9 @@ export default function btnLoad(field) {
 
   btn.addEventListener('click', () => {
     field.load = true;
-    field.delete()
-
-    let stepsTimes = get('longTimeSteps');
+    field.delete();
+    let stepsTimes = get('longTimeStepsBgr');
     let save = get('longGame');
-
     field.init(Math.sqrt(save.length + 1));
     field.stepsCounter = stepsTimes.steps;
     field.timeCounter = stepsTimes.times;

@@ -15,7 +15,7 @@ const field = new Field(START_SIZE);
 const buttons = create('div', 'buttons', null, main);
 btnNewGame(field);
 btnRestart(field);
-btnCapitulate();
+btnCapitulate(field);
 btnAddition(field);
 main.append(fieldWrap);
 field.init();
