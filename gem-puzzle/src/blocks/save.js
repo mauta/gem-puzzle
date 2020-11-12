@@ -5,7 +5,7 @@ import {
   set,
   get,
   del
-} from '../utils/storage.js'
+} from '../utils/storage.js';
 
 
 export default function btnSave(field) {
@@ -15,6 +15,11 @@ export default function btnSave(field) {
   btn.addEventListener('click', () => {
     set('longGame', field.cells);
     set('empty', field.empty);
-    set('longTimeSteps', {steps:  field.stepsCounter, times:field.timeCounter});
-  })
+    set('longTimeStepsBgr', {
+      steps: field.stepsCounter,
+      times: field.timeCounter,
+      bgr: field.backgroundImage,
+      kind: field.kind
+    });
+  });
 }

@@ -57,46 +57,42 @@ export default class Field {
       .sort(() => Math.random() - 0.5)
     localStorage.setItem('currentGame', numbers);
 
+    const solvedCounter = (arr) => {
+      let dlina = arr.length;
+      let counter = 0;
+      for (let i = 0; i < dlina; i++) {
+        let a = arr[i];
+        for (let j = i + 1; j < dlina - i; j++) {
+          if (arr[j] < a) {
+            counter++;
+          }
+        }
+      }
+      return counter;
+    };
 
-    // const solvedCounter = (arr) => {
-    //   let dlina = arr.length;
-    //   let counter = 0;
-    //   for (let i = 0; i < dlina; i++) {
-    //     let a = arr[i];
-    //     for (let j = i + 1; j < dlina - i; j++) {
-    //       if (arr[j] < a) {
-    //         counter++;
-    //       }
-    //     }
-    //   }
-    //   console.log(counter)
-    //   return counter;
-    // };
-
-    // if (solvedCounter(numbers) % 2 === 0) {
-    //   console.log('подошло');
-    //   this.numbers = numbers;
-    // } else {
-    //   console.log('не подошло');
-    //   this.generate();
-    // }
+    if (solvedCounter(numbers) % 2 === 0) {
+      this.numbers = numbers;
+    } else {
+      this.generate();
+    }
 
     this.numbers = numbers;
-    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 8)}.jpg)`;
+
 
   }
 
   step() {
-    this.stepsCounter++
-    let step = ''
-    let lastnumber = String(this.stepsCounter).slice(-1)
-    let last2number = String(this.stepsCounter).slice(-2, 1)
+    this.stepsCounter++;
+    let step = '';
+    let lastnumber = String(this.stepsCounter).slice(-1);
+    let last2number = String(this.stepsCounter).slice(-2, 1);
     if (lastnumber === '1' && last2number !== '1') {
-      step = 'шаг'
+      step = 'шаг';
     } else if ((lastnumber === '2' || lastnumber === '3' || lastnumber === '4') && last2number !== '1') {
-      step = 'шага'
+      step = 'шага';
     } else {
-      step = 'шагов'
+      step = 'шагов';
     }
     this.steps.textContent = `${this.stepsCounter} ${step}`;
   }
@@ -206,6 +202,7 @@ export default class Field {
   draw(isNew) {
     this.steps.textContent = `${this.stepsCounter} шагов`;
     let countCell = this.size * this.size;
+    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 8)}.jpg)`;
 
     this.empty = {
       value: this.size * this.size,
@@ -216,7 +213,7 @@ export default class Field {
     this.field.append(this.emptyCell);
     if (this.kind !== 'kind-digit') {
       this.field.style.backgroundImage = this.backgroundImage;
-      this.field.style.backgroundSize = 'contain';
+      this.field.style.backgroundSize = 'cover';
       this.field.style.backgroundColor = 'rgba(255,255,255,0.7)';
       this.field.style.backgroundBlendMode = 'overlay';
     }
@@ -240,6 +237,12 @@ export default class Field {
     } else {
       if (this.load) {
         let save = get('longGame');
+        let saveBgr = get('longTimeStepsBgr')
+        this.field.style.backgroundImage = saveBgr.bgr;
+        this.stepsCounter = saveBgr.steps;
+        this.steps.textContent = `${this.stepsCounter} шагов`;
+        this.timeCounter = saveBgr.times;
+        this.kind = saveBgr.kind;
         this.empty = get('empty');
         save.forEach((item) => {
           const left = item.left;
@@ -253,9 +256,9 @@ export default class Field {
             element: this.field.lastChild
           });
         })
-        this.load = false;
+
       } else {
-        this.numbers = localStorage.getItem('currentGame').split(',')
+        this.numbers = localStorage.getItem('currentGame').split(',');
         for (let i = 0; i < countCell - 1; i++) {
           const left = i % this.size + 1;
           const top = Math.ceil((i + 1) / this.size);
@@ -272,6 +275,15 @@ export default class Field {
     }
 
     if (this.kind !== 'kind-digit') {
+      if (this.load) {
+        let saveBgr = get('longTimeStepsBgr')
+        this.field.backgroundImage = saveBgr.bgr;
+        this.backgroundImage = saveBgr.bgr;
+        this.field.style.backgroundSize = 'cover';
+        this.field.style.backgroundColor = 'rgba(255,255,255,0.7)';
+        this.field.style.backgroundBlendMode = 'overlay';
+        this.load = false;
+      }
       for (let i = 0; i < countCell - 1; i++) {
         this.cells[i].element.style.backgroundImage = this.backgroundImage;
         this.cells[i].element.style.backgroundRepiat = 'no-repiat';
