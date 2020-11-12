@@ -1,12 +1,5 @@
-/* eslint-disable import/extensions */
-import create from '../utils/create.js';
-import Field from './field.js';
-import {
-  set,
-  get,
-  del
-} from '../utils/storage.js';
-
+import create from '../utils/create';
+import { set } from '../utils/storage';
 
 export default function btnSave(field) {
   const buttons = document.querySelector('.buttons');
@@ -19,7 +12,7 @@ export default function btnSave(field) {
       steps: field.stepsCounter,
       times: field.timeCounter,
       bgr: field.backgroundImage,
-      kind: field.kind
+      kind: field.kind,
     });
   });
 }

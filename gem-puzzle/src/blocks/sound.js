@@ -1,5 +1,5 @@
 /* eslint-disable import/extensions */
-import create from '../utils/create.js';
+import create from '../utils/create';
 
 let sound = true;
 
@@ -10,12 +10,12 @@ function btnSound() {
   btn.addEventListener('click', () => {
     if (sound) {
       sound = !sound;
-      btn.textContent = 'звук вкл'
+      btn.textContent = 'звук вкл';
     } else {
       sound = !sound;
-      btn.textContent = 'звук выкл'
+      btn.textContent = 'звук выкл';
     }
-  })
+  });
 }
 
 function isSound() {
@@ -24,5 +24,5 @@ function isSound() {
 
 export {
   btnSound,
-  isSound
+  isSound,
 };

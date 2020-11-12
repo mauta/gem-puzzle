@@ -134,6 +134,98 @@ function btnAddition(field) {
 
 /***/ }),
 
+/***/ "./src/blocks/ascname.js":
+/*!*******************************!*\
+  !*** ./src/blocks/ascname.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ascname; });
+/* harmony import */ var _utils_create__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create */ "./src/utils/create.js");
+/* harmony import */ var _field_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field.js */ "./src/blocks/field.js");
+/* harmony import */ var _sortrecords_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sortrecords.js */ "./src/blocks/sortrecords.js");
+/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
+
+
+
+
+
+function ascname(winner) {
+
+  const main = document.querySelector('main');
+  const popup = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'dark-screen', Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'popup-winner', Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('h2', 'title', 'Ура-ура-ура!!!')), main)
+  const winLevel = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('h3', 'win-score', `Вы решили головоломку ${winner.winLevel} х ${winner.winLevel}`, popup)
+  let sec = winner.winTime % 60
+  let min = Math.floor(winner.winTime / 60)
+
+  let step;
+  let lastnumber = String(winner.winStep).slice(-1)
+  let last2number = String(winner.winStep).slice(-2, 1)
+  if (lastnumber === '1' && last2number !== '1') {
+    step = 'шаг'
+  } else if ((lastnumber === '2' || lastnumber === '3' || lastnumber === '4') && last2number !== '1') {
+    step = 'шага'
+  } else {
+    step = 'шагов'
+  }
+
+  const winStepTime = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('h3', 'win-score', `за ${winner.winStep} ${step} и ${min} : ${sec}`, popup);
+
+  popup.firstChild.append(winLevel);
+  popup.firstChild.append(winStepTime);
+
+  let btnclose = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'close-btn', Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'visually-hidden', close), null, ['type', 'button']);
+  popup.firstChild.append(btnclose);
+  const nameLabel = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('label', 'name_label');
+  const nameInput = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('input', 'name_input', null, nameLabel, ['type', 'text'], ['placeholder', 'Введите имя']);
+  const nameText = Object(_utils_create__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'name_text hidden', null, nameLabel);
+  popup.firstChild.append(nameLabel);
+
+
+  function closePopup(popup) {
+    popup.remove();
+  }
+
+  btnclose.addEventListener('click', () => {
+    closePopup(popup);
+  });
+
+  function clearName() {
+    nameInput.setAttribute('placeholder', '')
+  }
+
+  function setName(el) {
+    if (el.type === 'keypress') {
+      if (el.keyCode === 13) {
+        nameText.innerText = nameInput.value
+        nameInput.classList.add('hidden')
+        nameText.classList.remove('hidden')
+        nameInput.blur()
+        winner.winName = nameInput.value;
+
+        let record = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('records')
+        if (record === null) {
+          record = [winner];
+        } else {
+          record.push(winner);
+        }
+
+        Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["set"])('records', record);
+      }
+    }
+  }
+
+  nameInput.addEventListener('click', clearName);
+  nameInput.addEventListener('keypress', setName)
+}
+
+
+
+/***/ }),
+
 /***/ "./src/blocks/capitulate.js":
 /*!**********************************!*\
   !*** ./src/blocks/capitulate.js ***!
@@ -268,32 +360,29 @@ class Difficulty {
 
     for (let i = 0; i < check.length; i++) {
       check[i].addEventListener('click', function (event) {
-        level = check[i].value
+        level = check[i].value;
       });
     }
     for (let i = 0; i < check2.length; i++) {
       check2[i].addEventListener('click', function (event) {
-        kind = check2[i].value
+        kind = check2[i].value;
       });
     }
 
     function closePopup(popup) {
-      popup.remove()
+      popup.remove();
     }
 
-    console.log(this.field)
-
-
     btnsubmit.addEventListener('click', () => {
-      console.log(this.field)
-      this.field.delete()
+      this.field.kind = kind;
+      this.field.delete();
       this.field.init(level);
       this.field.draw(true);
-      closePopup(this.popup)
+      closePopup(this.popup);
     })
 
     btnclose.addEventListener('click', () => {
-      closePopup(this.popup)
+      closePopup(this.popup);
     })
 
   }
@@ -313,11 +402,15 @@ class Difficulty {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Field; });
 /* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
-/* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cell.js */ "./src/blocks/cell.js");
-/* harmony import */ var _sound_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sound.js */ "./src/blocks/sound.js");
-/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
+/* harmony import */ var _ascname_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ascname.js */ "./src/blocks/ascname.js");
+/* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./cell.js */ "./src/blocks/cell.js");
+/* harmony import */ var _sortrecords_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./sortrecords.js */ "./src/blocks/sortrecords.js");
+/* harmony import */ var _sound_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./sound.js */ "./src/blocks/sound.js");
+/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/extensions */
+
+
 
 
 
@@ -334,16 +427,21 @@ class Field {
     this.timeCounter = 0;
     this.timerStop = '';
     this.GameSave = [];
-    this.steps = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'steps', `${this.stepsCounter} шагов`)
-    this.time = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'times', `${this.timeCounter}`)
-    this.score = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'score', [Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'record', 'рекорды'), this.steps, this.time], this.wrap);
+    this.steps = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'steps', `${this.stepsCounter} шагов`);
+    this.time = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'times', `${this.timeCounter}`);
+    this.record = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'record', 'рекорды');
+    this.score = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'score', [this.record, this.steps, this.time], this.wrap);
     this.field = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'field', null, this.wrap);
     this.load = false;
     this.empty = {
       value: this.size * this.size,
       left: this.size,
       top: this.size
-    }
+    };
+    this.emptyCell = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'empty', null, this.field);
+    this.numbers = [];
+    this.kind = 'kind-digit';
+    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 8)}.jpg)`;
   }
 
   init(size) {
@@ -361,57 +459,176 @@ class Field {
       .sort(() => Math.random() - 0.5)
     localStorage.setItem('currentGame', numbers);
 
-    return numbers
+    const solvedCounter = (arr) => {
+      let dlina = arr.length;
+      let counter = 0;
+      for (let i = 0; i < dlina; i++) {
+        let a = arr[i];
+        for (let j = i + 1; j < dlina - i; j++) {
+          if (arr[j] < a) {
+            counter++;
+          }
+        }
+      }
+      return counter;
+    };
+
+    if (solvedCounter(numbers) % 2 === 0) {
+      this.numbers = numbers;
+    } else {
+      this.generate();
+    }
+
+    this.numbers = numbers;
+
+
   }
 
   step() {
-    this.stepsCounter++
-    this.steps.textContent = `${this.stepsCounter} шагов`;
+    this.stepsCounter++;
+    let step = '';
+    let lastnumber = String(this.stepsCounter).slice(-1);
+    let last2number = String(this.stepsCounter).slice(-2, 1);
+    if (lastnumber === '1' && last2number !== '1') {
+      step = 'шаг';
+    } else if ((lastnumber === '2' || lastnumber === '3' || lastnumber === '4') && last2number !== '1') {
+      step = 'шага';
+    } else {
+      step = 'шагов';
+    }
+    this.steps.textContent = `${this.stepsCounter} ${step}`;
   }
 
   timer() {
-    this.timeCounter++
-    let sec = this.timeCounter % 60
-    let min = Math.floor(this.timeCounter / 60)
-    this.time.textContent = `${min} : ${sec}`
+    this.timeCounter++;
+    let sec = this.timeCounter % 60;
+    let min = Math.floor(this.timeCounter / 60);
+    this.time.textContent = `${min} : ${sec}`;
   }
 
   winner() {
-    let name = prompt('вы победили! \n введите имя:');
-    let winner = {
-      winName: name,
+
+    let winnerScore = {
+      winName: 'какой-то мужик',
       winLevel: this.size,
       winStep: this.stepsCounter,
       winTime: this.timeCounter
     }
-    let record = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('records')
-    if (record === null) {
-      record = [winner];
-    } else {
-      record.push(winner);
-    }
-    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["set"])('records', record);
+    Object(_ascname_js__WEBPACK_IMPORTED_MODULE_1__["default"])(winnerScore);
+
+  }
+
+  setDraggable() {
+    this.cells.forEach((item) => {
+      const leftDiff = Math.abs(this.empty.left - item.left);
+      const topDiff = Math.abs(this.empty.top - item.top);
+
+      if (leftDiff + topDiff > 1) {
+        item.element.removeAttribute('draggable');
+      } else {
+        item.element.setAttribute('draggable', true);
+      }
+    });
+
+    this.emptyCell.style.gridColumnStart = `${this.empty.left}`;
+    this.emptyCell.style.gridRowStart = `${this.empty.top}`;
+  }
+
+  dragDrop(item) {
+    let countCell = this.size * this.size;
+    const drop = () => {
+      const emptyLeft = this.empty.left;
+      const emptyTop = this.empty.top;
+      this.empty.left = item.left;
+      this.empty.top = item.top;
+      let countRight = 0;
+
+      item.left = emptyLeft;
+      item.top = emptyTop;
+      item.element.style.gridColumnStart = `${emptyLeft}`;
+      item.element.style.gridRowStart = `${emptyTop}`;
+      let isSoundOn = Object(_sound_js__WEBPACK_IMPORTED_MODULE_4__["isSound"])();
+      if (isSoundOn) {
+        const audio = document.querySelector('.audio');
+        audio.currentTime = 0;
+        audio.play();
+      }
+      this.cells.forEach((el) => {
+        el.element.removeAttribute('draggable')
+      });
+      this.emptyCell.removeEventListener(`drop`, drop);
+      this.setDraggable();
+
+
+      for (let i = 0; i < countCell - 1; i++) {
+        let position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
+        if (position === this.cells[i].value) {
+          countRight++;
+
+          this.cells[i].element.style.opacity = '0.8'
+        } else {
+          this.cells[i].element.style.opacity = '1'
+        }
+        if (countRight === countCell - 1) {
+          this.cells.forEach(el => el.element.style.opacity = '0.05')
+          clearInterval(this.timerStop);
+
+          const paused = setTimeout(() => {
+            this.winner()
+          }, 2000);
+        }
+      }
+    };
+
+    this.emptyCell.addEventListener(`drop`, drop);
+
+
+    item.element.addEventListener(`dragstart`, (evt) => {
+      evt.target.classList.add(`selected`);
+      setTimeout(() => {
+        evt.target.style.display = 'none'
+      }, 0);
+    });
+
+    item.element.addEventListener(`dragend`, (evt) => {
+      evt.target.classList.remove(`selected`);
+      evt.target.style.display = 'flex'
+    });
+
+    this.field.addEventListener(`dragover`, (evt) => {
+      evt.preventDefault();
+
+    });
   }
 
   draw(isNew) {
     this.steps.textContent = `${this.stepsCounter} шагов`;
-    let isWinner = false;
     let countCell = this.size * this.size;
-    let numbers;
+    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 8)}.jpg)`;
+
     this.empty = {
       value: this.size * this.size,
       left: this.size,
       top: this.size
-   }
+    };
     this.cells = [];
+    this.field.append(this.emptyCell);
+    if (this.kind !== 'kind-digit') {
+      this.field.style.backgroundImage = this.backgroundImage;
+      this.field.style.backgroundSize = 'cover';
+      this.field.style.backgroundColor = 'rgba(255,255,255,0.7)';
+      this.field.style.backgroundBlendMode = 'overlay';
+    }
+    this.emptyCell.style.gridColumnStart = this.empty.left;
+    this.emptyCell.style.gridRowStart = this.empty.top;
 
     if (isNew) {
-      numbers = this.generate();
+      this.generate();
       for (let i = 0; i < countCell - 1; i++) {
         const left = i % this.size + 1;
         const top = Math.ceil((i + 1) / this.size);
-        const value = numbers[i];
-        const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
+        const value = this.numbers[i];
+        const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_2__["default"](value, this.field, top, left);
         this.cells.push({
           value: value,
           left: left,
@@ -421,13 +638,19 @@ class Field {
       }
     } else {
       if (this.load) {
-        let save = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('longGame');
-        this.empty = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_3__["get"])('empty');
+        let save = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_5__["get"])('longGame');
+        let saveBgr = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_5__["get"])('longTimeStepsBgr')
+        this.field.style.backgroundImage = saveBgr.bgr;
+        this.stepsCounter = saveBgr.steps;
+        this.steps.textContent = `${this.stepsCounter} шагов`;
+        this.timeCounter = saveBgr.times;
+        this.kind = saveBgr.kind;
+        this.empty = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_5__["get"])('empty');
         save.forEach((item) => {
           const left = item.left;
           const top = item.top;
           const value = item.value;
-          const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
+          const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_2__["default"](value, this.field, top, left);
           this.cells.push({
             value: value,
             left: left,
@@ -435,14 +658,14 @@ class Field {
             element: this.field.lastChild
           });
         })
-        this.load = false;
+
       } else {
-        numbers = localStorage.getItem('currentGame').split(',')
+        this.numbers = localStorage.getItem('currentGame').split(',');
         for (let i = 0; i < countCell - 1; i++) {
           const left = i % this.size + 1;
           const top = Math.ceil((i + 1) / this.size);
-          const value = numbers[i];
-          const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_1__["default"](value, this.field, top, left);
+          const value = this.numbers[i];
+          const cell = new _cell_js__WEBPACK_IMPORTED_MODULE_2__["default"](value, this.field, top, left);
           this.cells.push({
             value: value,
             left: left,
@@ -451,19 +674,40 @@ class Field {
           });
         }
       }
+    }
 
+    if (this.kind !== 'kind-digit') {
+      if (this.load) {
+        let saveBgr = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_5__["get"])('longTimeStepsBgr')
+        this.field.backgroundImage = saveBgr.bgr;
+        this.backgroundImage = saveBgr.bgr;
+        this.field.style.backgroundSize = 'cover';
+        this.field.style.backgroundColor = 'rgba(255,255,255,0.7)';
+        this.field.style.backgroundBlendMode = 'overlay';
+        this.load = false;
+      }
+      for (let i = 0; i < countCell - 1; i++) {
+        this.cells[i].element.style.backgroundImage = this.backgroundImage;
+        this.cells[i].element.style.backgroundRepiat = 'no-repiat';
+        let value = this.cells[i].value - 1;
+        let persent = 100 / (this.size - 1);
+        this.cells[i].element.style.backgroundPosition = `${value % this.size * persent}% ${Math.floor(value / this.size) * persent}%`;
+      }
+    }
+    if (this.kind === 'kind-img') {
+      for (let i = 0; i < countCell - 1; i++) {
+        this.cells[i].element.style.color = 'transparent'
+      }
     }
 
 
-
+    this.setDraggable();
 
     const move = (item) => {
       const leftDiff = Math.abs(this.empty.left - item.left);
       const topDiff = Math.abs(this.empty.top - item.top);
       const cellMoved = item;
       let countRight = 0;
-
-
       if (leftDiff + topDiff > 1) {
         return;
       } else {
@@ -475,43 +719,108 @@ class Field {
         cellMoved.top = emptyTop;
         cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
         cellMoved.element.style.gridRowStart = `${emptyTop}`;
-        let isSoundOn = Object(_sound_js__WEBPACK_IMPORTED_MODULE_2__["isSound"])();
+        this.emptyCell.style.gridColumnStart = this.empty.left;
+        this.emptyCell.style.gridRowStart = this.empty.top;
+        let isSoundOn = Object(_sound_js__WEBPACK_IMPORTED_MODULE_4__["isSound"])();
         if (isSoundOn) {
           const audio = document.querySelector('.audio');
           audio.currentTime = 0;
           audio.play();
         }
+
       }
 
       for (let i = 0; i < countCell - 1; i++) {
         let position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
         if (position === this.cells[i].value) {
           countRight++;
-          this.cells[i].element.style.opacity = '0.8'
+          if (this.kind === 'kind-digit') {
+            this.cells[i].element.style.opacity = '0.8'
+          } else {
+            this.cells[i].element.style.opacity = '1'
+          }
         } else {
-          this.cells[i].element.style.opacity = '1'
+          if (this.kind === 'kind-digit') {
+            this.cells[i].element.style.opacity = '1'
+          } else {
+            this.cells[i].element.style.opacity = '0.8'
+          }
         }
         if (countRight === countCell - 1) {
-          this.cells.forEach(el => el.element.style.opacity = '0.1')
+          this.cells.forEach(el => el.element.style.opacity = '0.05')
           clearInterval(this.timerStop);
-          isWinner = true;
+
+          const paused = setTimeout(() => {
+            this.winner()
+          }, 1000);
         }
       }
       this.step();
+      this.setDraggable();
 
-      console.log(this.cells[5].element)
     }
 
-    this.cells.forEach(item => item.element.addEventListener('click', () => {
-      move(item);
-      if (isWinner) {
-        this.winner();
+    this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
+      this.dragDrop(item);
+    }));
+
+    this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
+      let leftDiff = this.empty.left - item.left;
+      let topDiff = this.empty.top - item.top;
+
+
+      function animateRight() {
+        move(item);
+        item.element.classList.remove('moveRight')
+        item.element.removeEventListener('transitionend', animateRight);
       }
+
+      function animateLeft() {
+        move(item);
+        item.element.classList.remove('moveLeft')
+        item.element.removeEventListener('transitionend', animateLeft);
+      }
+
+      function animateDown() {
+        move(item);
+        item.element.classList.remove('moveDown')
+        item.element.removeEventListener('transitionend', animateDown);
+      }
+
+      function animateUp() {
+        move(item);
+        item.element.classList.remove('moveUp')
+        item.element.removeEventListener('transitionend', animateUp);
+      }
+
+      if (leftDiff === 1 && topDiff === 0) {
+        item.element.classList.add('moveRight')
+        item.element.addEventListener('transitionend', animateRight);
+      }
+
+      if (leftDiff === -1 && topDiff === 0) {
+        item.element.classList.add('moveLeft')
+        item.element.addEventListener('transitionend', animateLeft);
+      }
+      if (topDiff === 1 && leftDiff === 0) {
+        item.element.classList.add('moveDown')
+        item.element.addEventListener('transitionend', animateDown);
+      }
+      if (topDiff === -1 && leftDiff === 0) {
+        item.element.classList.add('moveUp')
+        item.element.addEventListener('transitionend', animateUp);
+      }
+
+
     }));
 
     this.timerStop = setInterval(() => {
       this.timer();
     }, 1000)
+
+    this.record.addEventListener('click', () => {
+      Object(_sortrecords_js__WEBPACK_IMPORTED_MODULE_3__["default"])()
+    })
   }
 
   delete() {
@@ -586,8 +895,15 @@ function btnLoad(field) {
   btn.addEventListener('click', () => {
     field.load = true;
     field.delete()
+
+    let stepsTimes = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["get"])('longTimeSteps');
+    let save = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["get"])('longGame');
+
+    field.init(Math.sqrt(save.length + 1));
+    field.stepsCounter = stepsTimes.steps;
+    field.timeCounter = stepsTimes.times;
     field.draw(false);
-  })
+  });
 }
 
 
@@ -712,9 +1028,100 @@ function btnSave(field) {
   const btn = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'bntCapitulate btn', 'сохранить', buttons, ['type', 'button']);
 
   btn.addEventListener('click', () => {
-    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('longGame', field.cells)
-    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('empty', field.empty)
+    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('longGame', field.cells);
+    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('empty', field.empty);
+    Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_2__["set"])('longTimeStepsBgr', {
+      steps: field.stepsCounter,
+      times: field.timeCounter,
+      bgr: field.backgroundImage,
+      kind: field.kind
+    });
+  });
+}
+
+
+/***/ }),
+
+/***/ "./src/blocks/sortrecords.js":
+/*!***********************************!*\
+  !*** ./src/blocks/sortrecords.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return sortrecords; });
+/* harmony import */ var _utils_create_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/create.js */ "./src/utils/create.js");
+/* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/storage.js */ "./src/utils/storage.js");
+/* eslint-disable import/extensions */
+
+
+
+function sortrecords() {
+  const main = document.querySelector('main');
+  const popup = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'dark-screen', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'popup', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('h2', 'title', 'РЕКОРДЫ')), main)
+  const listRecords = Object(_utils_storage_js__WEBPACK_IMPORTED_MODULE_1__["get"])('records');
+  const recordsWrap = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'records-wrap');
+  popup.firstChild.append(recordsWrap);
+  let count = 10;
+
+  function byKey(key) {
+    return (a, b) => a[key] > b[key] ? 1 : -1;
+  }
+
+  let sortList = listRecords.sort(byKey('winTime'));
+  const stepTitle = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-step', `ШАГИ:`);
+  const timeTitle = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-time', `ВРЕМЯ:`);
+
+  const title = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-title', [Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-name', `ИМЯ:`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-level', `УРОВЕНЬ:`), stepTitle, timeTitle], recordsWrap)
+
+  sortList.length < 10 ? count = sortList.length : count = 10;
+
+  stepTitle.addEventListener('click', () => {
+    sortList = listRecords.sort(byKey('winStep'));
+    for (let i = 0; i < count; i++) {
+      recordsWrap.lastChild.remove()
+    }
+    for (let i = 0; i < count; i++) {
+      let sec = sortList[i].winTime % 60
+      let min = Math.floor(sortList[i].winTime / 60)
+      const playerName = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'player-name', `${sortList[i].winName}`)
+      const player = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player', [playerName, Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-step', `${sortList[i].winStep}`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-time', `${min} : ${sec}`)], recordsWrap)
+    }
   })
+
+  timeTitle.addEventListener('click', () => {
+    sortList = listRecords.sort(byKey('winTime'));
+    for (let i = 0; i < count; i++) {
+      recordsWrap.lastChild.remove()
+    }
+    for (let i = 0; i < count; i++) {
+      let sec = sortList[i].winTime % 60
+      let min = Math.floor(sortList[i].winTime / 60)
+      const playerName = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'player-name', `${sortList[i].winName}`)
+      const player = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player', [playerName, Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-step', `${sortList[i].winStep}`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-time', `${min} : ${sec}`)], recordsWrap)
+    }
+  })
+
+
+  for (let i = 0; i < count; i++) {
+    let sec = sortList[i].winTime % 60
+    let min = Math.floor(sortList[i].winTime / 60)
+    const playerName = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'player-name', `${sortList[i].winName}`)
+    const player = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player', [playerName, Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-step', `${sortList[i].winStep}`), Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-time', `${min} : ${sec}`)], recordsWrap)
+  }
+
+  let btnclose = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('button', 'close-btn', Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('span', 'visually-hidden', close), null, ['type', 'button']);
+  popup.firstChild.append(btnclose);
+
+  function closePopup(popup) {
+    popup.remove();
+  }
+
+  btnclose.addEventListener('click', () => {
+    closePopup(popup);
+  });
 }
 
 

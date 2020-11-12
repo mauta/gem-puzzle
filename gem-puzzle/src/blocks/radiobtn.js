@@ -11,6 +11,6 @@ export default class RadioInput {
     this.parent = parent;
     this.label = create('label', 'label', `${this.inner}`);
     this.input = create('input', this.classmame, null, this.label, ['name', this.name], ['type', this.type], ['value', this.value]);
-    this.span = create('span', 'radio', null, this.label)
+    this.span = create('span', 'radio', null, this.label);
   }
 }
