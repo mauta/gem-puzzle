@@ -519,3 +519,60 @@ h3 {
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
 }
+
+
+@media (max-width:520px){
+  .field{
+    width: 90vw;
+    height: 90vw;
+  }
+
+  .score{
+    width: 90vw;
+    font-size: 26px;
+  }
+
+  .buttons{
+    width: 90vw;
+  }
+
+  .btn{
+    font-size: 18px;
+  }
+
+  .popup-winner{
+    width: 70vw;
+  }
+
+  .popup{
+    width: 70vw;
+  }
+  .form-wrap {
+    width: 68vw;
+    padding-bottom: 10px;
+  }
+
+  .label{
+    width: 120px;
+    margin-bottom: 5px;
+  }
+
+  .label-kind{
+    width: auto;
+  }
+
+  .records-wrap{
+    width: 65vw;
+    margin-bottom: 10px;
+
+  }
+
+  .player{
+    width: 65vw;
+    font-size: 18px;
+  }
+
+  .player-level{
+    display: none;
+  }
+}

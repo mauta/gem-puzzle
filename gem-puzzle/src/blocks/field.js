@@ -161,7 +161,8 @@ export default class Field {
           this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
         }
         if (countRight === this.countCell - 1) {
-          this.cells.forEach(el => el.element.style.opacity = '0.05');
+          this.cells.forEach(el => el.element.style.opacity = '0');
+          this.field.style.backgroundColor = 'transparent';
           clearInterval(this.timerStop);
           setTimeout(() => {
             this.winner();
@@ -225,6 +226,7 @@ export default class Field {
       }
       if (countRight === this.countCell - 1) {
         this.cells.forEach(el => el.element.style.opacity = '0');
+        this.field.style.backgroundColor = 'transparent';
         clearInterval(this.timerStop);
         setTimeout(() => {
           this.winner();

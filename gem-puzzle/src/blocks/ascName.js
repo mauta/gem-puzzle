@@ -31,7 +31,7 @@ export default function ascname(winner) {
   const nameText = create('span', 'name_text hidden', null, nameLabel);
   popup.firstChild.append(nameLabel);
 
-  function closePopup(node) {
+  const closePopup = (node) => {
     node.remove();
   }
 
