@@ -9,6 +9,7 @@ import {
 } from './sound';
 import {
   get,
+  set,
 } from '../utils/storage';
 
 export default class Field {
@@ -34,7 +35,7 @@ export default class Field {
     this.emptyCell = create('div', 'empty', null, this.field);
     this.numbers = [];
     this.kind = 'kind-digit';
-    this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 33)}.jpg)`;
+    this.backgroundImage = '';
     this.animatedList = [];
   }
 
@@ -42,39 +43,13 @@ export default class Field {
     this.size = size || this.size;
     this.field.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
     this.field.style.gridTemplateRows = `repeat(${this.size}, 1fr)`;
-
     return this;
   }
 
   generate() {
     this.countCell = this.size * this.size;
     const numbers = [...Array(this.countCell - 1).keys()]
-      .map(x => x + 1)
-    // .sort(() => Math.random() - 0.5);
-    localStorage.setItem('currentGame', numbers);
-
-    const solvedCounter = (arr) => {
-      const dlina = arr.length;
-      let counter = 0;
-      for (let i = 0; i < dlina; i += 1) {
-        const a = arr[i];
-        for (let j = i + 1; j < dlina; j += 1) {
-          if (arr[j] < a) {
-            counter += 1;
-          }
-        }
-      }
-      return counter;
-    };
-
-    if (solvedCounter(numbers) % 2 === 0) {
-      console.log('подошло');
-      this.numbers = numbers;
-    } else {
-      console.log('не подошло');
-      this.generate();
-    }
-
+      .map((x) => x + 1);
     this.numbers = numbers;
   }
 
@@ -161,7 +136,7 @@ export default class Field {
           this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
         }
         if (countRight === this.countCell - 1) {
-          this.cells.forEach(el => el.element.style.opacity = '0');
+          this.cells.forEach((el) => el.element.style.opacity = '0');
           this.field.style.backgroundColor = 'transparent';
           clearInterval(this.timerStop);
           setTimeout(() => {
@@ -272,44 +247,58 @@ export default class Field {
           element: this.field.lastChild,
         });
       }
+      this.shuffle();
+      set('currentGame', this.cells);
+      set('currentEmpty', this.empty);
+      set('currentBgr', {
+        bgr: this.backgroundImage,
+        kind: this.kind,
+      });
+    } else if (this.load) {
+      let save = get('longGame');
+      let saveBgr = get('longTimeStepsBgr')
+      this.field.style.backgroundImage = saveBgr.bgr;
+      this.stepsCounter = saveBgr.steps;
+      this.steps.textContent = `${this.stepsCounter} шагов`;
+      this.timeCounter = saveBgr.times;
+      this.kind = saveBgr.kind;
+      this.empty = get('empty');
+      save.forEach((item) => {
+        const left = item.left;
+        const top = item.top;
+        const value = item.value;
+        const cell = new Cell(value, this.field, top, left);
+        this.cells.push({
+          value: value,
+          left: left,
+          top: top,
+          element: this.field.lastChild
+        });
+      });
     } else {
-      if (this.load) {
-        let save = get('longGame');
-        let saveBgr = get('longTimeStepsBgr')
-        this.field.style.backgroundImage = saveBgr.bgr;
-        this.stepsCounter = saveBgr.steps;
-        this.steps.textContent = `${this.stepsCounter} шагов`;
-        this.timeCounter = saveBgr.times;
-        this.kind = saveBgr.kind;
-        this.empty = get('empty');
-        save.forEach((item) => {
-          const left = item.left;
-          const top = item.top;
-          const value = item.value;
-          const cell = new Cell(value, this.field, top, left);
-          this.cells.push({
-            value: value,
-            left: left,
-            top: top,
-            element: this.field.lastChild
-          });
-        })
-
-      } else {
-        this.numbers = localStorage.getItem('currentGame').split(',');
-        for (let i = 0; i < this.countCell - 1; i += 1) {
-          const left = (i % this.size) + 1;
-          const top = Math.ceil((i + 1) / this.size);
-          const value = this.numbers[i];
-          const cell = new Cell(value, this.field, top, left);
-          this.cells.push({
-            value: value,
-            left: left,
-            top: top,
-            element: this.field.lastChild
-          });
-        }
+      let currentPuzzle = get('currentGame');
+      let currentBgr = get('currentBgr');
+      if (currentBgr.kind === 'kind-digit') {
+        currentBgr.bgr = '';
       }
+      this.field.style.backgroundImage = currentBgr.bgr;
+      this.stepsCounter = 0;
+      this.steps.textContent = `${this.stepsCounter} шагов`;
+      this.timeCounter = 0;
+      this.kind = currentBgr.kind;
+      this.empty = get('currentEmpty');
+      currentPuzzle.forEach((item) => {
+        const left = item.left;
+        const top = item.top;
+        const value = item.value;
+        const cell = new Cell(value, this.field, top, left);
+        this.cells.push({
+          value: value,
+          left: left,
+          top: top,
+          element: this.field.lastChild
+        });
+      });
     }
 
     if (this.kind !== 'kind-digit') {
@@ -336,6 +325,8 @@ export default class Field {
         this.cells[i].element.style.color = 'transparent';
       }
     }
+
+
 
     this.setDraggable();
     this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
@@ -396,6 +387,8 @@ export default class Field {
     this.record.addEventListener('click', () => {
       sortrecords();
     });
+
+    this.arrowMove();
   }
 
   delete() {
@@ -408,54 +401,140 @@ export default class Field {
   }
 
   animation() {
-    console.log(this.animatedList);
-
-    let i = 0;
-    console.log(this.animatedList.length);
-    while (i < this.animatedList.length) {
-      let item = this.animatedList[i];
-      let leftDiff = this.empty.left - item.left;
-      let topDiff = this.empty.top - item.top;
-
-      function animateDown() {
-        console.log('я до мува');
-        this.move(item);
-        console.log('я после мува');
-        item.element.classList.remove('moveDown');
-        item.element.removeEventListener('transitionend', animateDown);
-        i = i++;
+    if (this.animatedList.length) {
+      const direction = this.animatedList.shift();
+      if (direction === 0) {
+        if (this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
+          this.move(item);
+        }
+      }
+      if (direction === 1) {
+        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
+          this.move(item);
+        }
+      }
+      if (direction === 2) {
+        if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
+          this.move(item);
+        }
+      }
+      if (direction === 3) {
+        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
+          this.move(item);
+        }
       };
-
-      if (topDiff === 1 && leftDiff === 0) {
-        console.log('я ближайший');
-        item.element.classList.add('moveDown');
-        item.element.addEventListener('transitionend', animateDown);
-      };
-
+      setTimeout(() => {
+        this.animation();
+      }, 100);
     }
+  }
 
-    // this.animatedList.forEach(item => {
-    //   console.log(item);
-    //   let leftDiff = this.empty.left - item.left;
-    //   let topDiff = this.empty.top - item.top;
+  shuffle() {
+    const pureMove = (item) => {
+      const leftDiff = Math.abs(this.empty.left - item.left);
+      const topDiff = Math.abs(this.empty.top - item.top);
+      const cellMoved = item;
+      if ((leftDiff + topDiff) === 1) {
+        const emptyLeft = this.empty.left;
+        const emptyTop = this.empty.top;
+        this.empty.left = cellMoved.left;
+        this.empty.top = cellMoved.top;
+        cellMoved.left = emptyLeft;
+        cellMoved.top = emptyTop;
+        cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
+        cellMoved.element.style.gridRowStart = `${emptyTop}`;
+        this.emptyCell.style.gridColumnStart = this.empty.left;
+        this.emptyCell.style.gridRowStart = this.empty.top;
+      }
+    };
 
-    //   // console.log('я до мува');
-    //   // move(item);
-    //   // console.log('я после мува');
+    const result = [0];
+    for (let i = 0; i < 10 * this.countCell; i += 1) {
+      const current = result[i];
+      let rand = Math.floor(Math.random() * 4);
+      if ((current + rand) % 2 === 0) {
+        rand = (rand + 1) % 4;
+      }
+      result.push(rand);
+    }
+    this.animatedList = result;
+    const rigthMove = [];
+    this.animatedList.forEach((direction) => {
+      if (direction === 0) {
+        if (this.cells.find((el) => el.left == this.empty.left && el.top == this.empty.top - 1)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top == this.empty.top - 1 && el.left == this.empty.left);
+          pureMove(item);
+          rigthMove.push(direction);
+        }
+      }
+      if (direction === 1) {
+        if (this.cells.find((el) => el.left == this.empty.left + 1 && el.top == this.empty.top)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top == this.empty.top && el.left == this.empty.left + 1);
+          pureMove(item);
+          rigthMove.push(direction);
+        }
+      }
+      if (direction === 2) {
+        if (this.cells.find((el) => el.top == this.empty.top + 1 && el.left == this.empty.left)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top == this.empty.top + 1 && el.left == this.empty.left);
+          pureMove(item);
+          rigthMove.push(direction);
+        }
+      }
+      if (direction === 3) {
+        if (this.cells.find((el) => el.top == this.empty.top && el.left == this.empty.left - 1)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top == this.empty.top && el.left == this.empty.left - 1);
+          pureMove(item);
+          rigthMove.push(direction);
+        }
+      }
+    });
+    this.animatedList = rigthMove;
+  }
 
-    //   const animateDown = () => {
-    //     console.log('я до мува');
-    //     move(item);
-    //     console.log('я после мува');
-    //     item.element.classList.remove('moveDown');
-    //     item.element.removeEventListener('transitionend', animateDown);
-    //   };
-
-    //   if (topDiff === 1 && leftDiff === 0) {
-    //     console.log('я ближайший');
-    //     item.element.classList.add('moveDown');
-    //     item.element.addEventListener('transitionend', animateDown);
-    //   };
-    // });
+  arrowMove() {
+    document.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      if (e.code === 'ArrowUp') {
+        if (this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
+          this.move(item);
+        }
+      }
+      if (e.code === 'ArrowDown') {
+        if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
+          this.move(item);
+        }
+      }
+      if (e.code === 'ArrowLeft') {
+        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
+          this.move(item);
+        }
+      }
+      if (e.code === 'ArrowRight') {
+        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1)) {
+          // eslint-disable-next-line max-len
+          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
+          this.move(item);
+        }
+      }
+    });
   }
 }
