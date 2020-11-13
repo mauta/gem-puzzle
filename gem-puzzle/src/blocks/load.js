@@ -21,6 +21,7 @@ export default function btnLoad(field) {
     field.init(Math.sqrt(save.length + 1));
     field.stepsCounter = stepsTimes.steps;
     field.timeCounter = stepsTimes.times;
+    field.isAutoPlay = false;
     field.draw(false);
   });
 }

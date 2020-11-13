@@ -37,6 +37,8 @@ export default class Field {
     this.kind = 'kind-digit';
     this.backgroundImage = '';
     this.animatedList = [];
+    this.isAutoPlay = false;
+    this.stopAnimation = false;
   }
 
   init(size) {
@@ -103,7 +105,23 @@ export default class Field {
 
   dragDrop(item) {
     this.countCell = this.size * this.size;
+
     const drop = () => {
+      const leftDiff = this.empty.left - item.left;
+      const topDiff = this.empty.top - item.top;
+      if (leftDiff === 1 && topDiff === 0) {
+        this.animatedList.push(3);
+      }
+
+      if (leftDiff === -1 && topDiff === 0) {
+        this.animatedList.push(1);
+      }
+      if (topDiff === 1 && leftDiff === 0) {
+        this.animatedList.push(0);
+      }
+      if (topDiff === -1 && leftDiff === 0) {
+        this.animatedList.push(2);
+      }
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
       this.empty.left = item.left;
@@ -139,6 +157,7 @@ export default class Field {
           this.cells.forEach((el) => el.element.style.opacity = '0');
           this.field.style.backgroundColor = 'transparent';
           clearInterval(this.timerStop);
+          this.field.style.pointerEvents = 'none'
           setTimeout(() => {
             this.winner();
           }, 2000);
@@ -203,9 +222,14 @@ export default class Field {
         this.cells.forEach(el => el.element.style.opacity = '0');
         this.field.style.backgroundColor = 'transparent';
         clearInterval(this.timerStop);
-        setTimeout(() => {
-          this.winner();
-        }, 1000);
+
+        this.stopAnimation = true;
+ this.field.style.pointerEvents = 'none'
+        if (!this.isAutoPlay) {
+          setTimeout(() => {
+            this.winner();
+          }, 1000);
+        }
       }
     }
     this.step();
@@ -216,7 +240,7 @@ export default class Field {
     this.steps.textContent = `${this.stepsCounter} шагов`;
     this.countCell = this.size * this.size;
     this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 33)}.jpg)`;
-
+    this.field.style.pointerEvents = 'auto'
     this.empty = {
       value: this.size * this.size,
       left: this.size,
@@ -288,15 +312,21 @@ export default class Field {
       this.kind = currentBgr.kind;
       this.empty = get('currentEmpty');
       currentPuzzle.forEach((item) => {
-        const left = item.left;
-        const top = item.top;
-        const value = item.value;
+        const {
+          left
+        } = item;
+        const {
+          top
+        } = item;
+        const {
+          value
+        } = item;
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
-          value: value,
-          left: left,
-          top: top,
-          element: this.field.lastChild
+          value,
+          left,
+          top,
+          element: this.field.lastChild,
         });
       });
     }
@@ -325,8 +355,6 @@ export default class Field {
         this.cells[i].element.style.color = 'transparent';
       }
     }
-
-
 
     this.setDraggable();
     this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
@@ -364,19 +392,23 @@ export default class Field {
       if (leftDiff === 1 && topDiff === 0) {
         item.element.classList.add('moveRight');
         item.element.addEventListener('transitionend', animateRight);
+        this.animatedList.push(3);
       }
 
       if (leftDiff === -1 && topDiff === 0) {
         item.element.classList.add('moveLeft');
         item.element.addEventListener('transitionend', animateLeft);
+        this.animatedList.push(1);
       }
       if (topDiff === 1 && leftDiff === 0) {
         item.element.classList.add('moveDown');
         item.element.addEventListener('transitionend', animateDown);
+        this.animatedList.push(0);
       }
       if (topDiff === -1 && leftDiff === 0) {
         item.element.classList.add('moveUp');
         item.element.addEventListener('transitionend', animateUp);
+        this.animatedList.push(2);
       }
     }));
 
@@ -401,39 +433,41 @@ export default class Field {
   }
 
   animation() {
-    if (this.animatedList.length) {
-      const direction = this.animatedList.shift();
-      if (direction === 0) {
-        if (this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left)) {
-          // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
-          this.move(item);
+    if (!this.stopAnimation) {
+      if (this.animatedList.length) {
+        const direction = this.animatedList.shift();
+        if (direction === 0) {
+          if (this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left)) {
+            // eslint-disable-next-line max-len
+            const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
+            this.move(item);
+          }
         }
+        if (direction === 1) {
+          if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1)) {
+            // eslint-disable-next-line max-len
+            const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
+            this.move(item);
+          }
+        }
+        if (direction === 2) {
+          if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
+            // eslint-disable-next-line max-len
+            const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
+            this.move(item);
+          }
+        }
+        if (direction === 3) {
+          if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
+            // eslint-disable-next-line max-len
+            const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
+            this.move(item);
+          }
+        }
+        setTimeout(() => {
+          this.animation();
+        }, 100);
       }
-      if (direction === 1) {
-        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1)) {
-          // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
-          this.move(item);
-        }
-      }
-      if (direction === 2) {
-        if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
-          // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
-          this.move(item);
-        }
-      }
-      if (direction === 3) {
-        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
-          // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
-          this.move(item);
-        }
-      };
-      setTimeout(() => {
-        this.animation();
-      }, 100);
     }
   }
 
@@ -469,33 +503,33 @@ export default class Field {
     const rigthMove = [];
     this.animatedList.forEach((direction) => {
       if (direction === 0) {
-        if (this.cells.find((el) => el.left == this.empty.left && el.top == this.empty.top - 1)) {
+        if (this.cells.find((el) => el.left === this.empty.left && el.top === this.empty.top - 1)) {
           // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top == this.empty.top - 1 && el.left == this.empty.left);
+          const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
           pureMove(item);
           rigthMove.push(direction);
         }
       }
       if (direction === 1) {
-        if (this.cells.find((el) => el.left == this.empty.left + 1 && el.top == this.empty.top)) {
+        if (this.cells.find((el) => el.left === this.empty.left + 1 && el.top === this.empty.top)) {
           // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top == this.empty.top && el.left == this.empty.left + 1);
+          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
           pureMove(item);
           rigthMove.push(direction);
         }
       }
       if (direction === 2) {
-        if (this.cells.find((el) => el.top == this.empty.top + 1 && el.left == this.empty.left)) {
+        if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
           // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top == this.empty.top + 1 && el.left == this.empty.left);
+          const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
           pureMove(item);
           rigthMove.push(direction);
         }
       }
       if (direction === 3) {
-        if (this.cells.find((el) => el.top == this.empty.top && el.left == this.empty.left - 1)) {
+        if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
           // eslint-disable-next-line max-len
-          const item = this.cells.find((el) => el.top == this.empty.top && el.left == this.empty.left - 1);
+          const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
           pureMove(item);
           rigthMove.push(direction);
         }
@@ -512,6 +546,7 @@ export default class Field {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
           this.move(item);
+          this.animatedList.push(0);
         }
       }
       if (e.code === 'ArrowDown') {
@@ -519,6 +554,7 @@ export default class Field {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
           this.move(item);
+          this.animatedList.push(2);
         }
       }
       if (e.code === 'ArrowLeft') {
@@ -526,6 +562,7 @@ export default class Field {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
           this.move(item);
+          this.animatedList.push(3);
         }
       }
       if (e.code === 'ArrowRight') {
@@ -533,6 +570,7 @@ export default class Field {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
           this.move(item);
+          this.animatedList.push(1);
         }
       }
     });

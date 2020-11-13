@@ -7,6 +7,7 @@ export default function restart(field) {
 
   btn.addEventListener('click', () => {
     field.delete();
+    field.isAutoPlay = false;
     field.draw(false);
   });
 }

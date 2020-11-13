@@ -72,7 +72,7 @@ export default class Difficulty {
     btnsubmit.addEventListener('click', () => {
       this.field.kind = kind;
       this.field.delete();
-      this.field.init(levelLevel);
+      this.field.init(Number(levelLevel));
       this.field.draw(true);
       closePopup(this.popup);
     });

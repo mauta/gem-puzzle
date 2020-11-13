@@ -7,6 +7,9 @@ export default function capitulate(field) {
 
   btn.addEventListener('click', () => {
     field.animatedList = field.animatedList.reverse().map((x) => (x + 2) % 4);
+    field.isAutoPlay = true;
+    field.stopAnimation = false;
+    console.log(field.animatedList);
     field.animation();
   });
 }
