@@ -1,5 +1,8 @@
 import create from '../utils/create';
-import { set, get } from '../utils/storage';
+import {
+  set,
+  get,
+} from '../utils/storage';
 
 export default function ascname(winner) {
   const main = document.querySelector('main');
@@ -33,7 +36,7 @@ export default function ascname(winner) {
 
   const closePopup = (node) => {
     node.remove();
-  }
+  };
 
   btnclose.addEventListener('click', () => {
     closePopup(popup);
@@ -43,8 +46,10 @@ export default function ascname(winner) {
     nameInput.setAttribute('placeholder', '');
   }
 
-  function setName(el) {
-    if (el.type === 'keypress') {
+  const setName = (el) => {
+    el.stopPropagation();
+    if (el.type === 'keydown') {
+      debugger;
       if (el.keyCode === 13) {
         nameText.innerText = nameInput.value;
         nameInput.classList.add('hidden');
@@ -58,12 +63,11 @@ export default function ascname(winner) {
         } else {
           record.push(winner);
         }
-
         set('records', record);
       }
     }
-  }
+  };
 
   nameInput.addEventListener('click', clearName);
-  nameInput.addEventListener('keypress', setName);
+  nameInput.addEventListener('keydown', setName);
 }

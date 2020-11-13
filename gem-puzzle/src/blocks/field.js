@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 
 import create from '../utils/create';
@@ -157,7 +158,7 @@ export default class Field {
           this.cells.forEach((el) => el.element.style.opacity = '0');
           this.field.style.backgroundColor = 'transparent';
           clearInterval(this.timerStop);
-          this.field.style.pointerEvents = 'none'
+          this.field.style.pointerEvents = 'none';
           setTimeout(() => {
             this.winner();
           }, 2000);
@@ -224,7 +225,7 @@ export default class Field {
         clearInterval(this.timerStop);
 
         this.stopAnimation = true;
- this.field.style.pointerEvents = 'none'
+        // this.field.style.pointerEvents = 'none'
         if (!this.isAutoPlay) {
           setTimeout(() => {
             this.winner();
@@ -240,7 +241,7 @@ export default class Field {
     this.steps.textContent = `${this.stepsCounter} шагов`;
     this.countCell = this.size * this.size;
     this.backgroundImage = `url(images/${Math.floor(1 + Math.random() * 33)}.jpg)`;
-    this.field.style.pointerEvents = 'auto'
+    this.field.style.pointerEvents = 'auto';
     this.empty = {
       value: this.size * this.size,
       left: this.size,
@@ -274,13 +275,16 @@ export default class Field {
       this.shuffle();
       set('currentGame', this.cells);
       set('currentEmpty', this.empty);
+      set('currentAnimatedList', this.animatedList);
       set('currentBgr', {
         bgr: this.backgroundImage,
         kind: this.kind,
       });
     } else if (this.load) {
-      let save = get('longGame');
-      let saveBgr = get('longTimeStepsBgr')
+      const save = get('longGame');
+      const saveBgr = get('longTimeStepsBgr');
+      const longAnimatedList = get('longAnimatedList');
+      this.animatedList = longAnimatedList;
       this.field.style.backgroundImage = saveBgr.bgr;
       this.stepsCounter = saveBgr.steps;
       this.steps.textContent = `${this.stepsCounter} шагов`;
@@ -299,12 +303,20 @@ export default class Field {
           element: this.field.lastChild
         });
       });
+      set('currentGame', this.cells);
+      set('currentEmpty', this.empty);
+      set('currentAnimatedList', this.animatedList);
+      set('currentBgr', {
+        bgr: this.backgroundImage,
+        kind: this.kind,
+      });
     } else {
-      let currentPuzzle = get('currentGame');
-      let currentBgr = get('currentBgr');
+      const currentPuzzle = get('currentGame');
+      const currentBgr = get('currentBgr');
       if (currentBgr.kind === 'kind-digit') {
         currentBgr.bgr = '';
       }
+      this.backgroundImage = currentBgr.bgr;
       this.field.style.backgroundImage = currentBgr.bgr;
       this.stepsCounter = 0;
       this.steps.textContent = `${this.stepsCounter} шагов`;
@@ -313,13 +325,13 @@ export default class Field {
       this.empty = get('currentEmpty');
       currentPuzzle.forEach((item) => {
         const {
-          left
+          left,
         } = item;
         const {
-          top
+          top,
         } = item;
         const {
-          value
+          value,
         } = item;
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
@@ -334,12 +346,16 @@ export default class Field {
     if (this.kind !== 'kind-digit') {
       if (this.load) {
         const saveBgr = get('longTimeStepsBgr');
-        this.field.backgroundImage = saveBgr.bgr;
+        this.backgroundImage = saveBgr.bgr;
         this.backgroundImage = saveBgr.bgr;
         this.field.style.backgroundSize = 'contain';
         this.field.style.backgroundColor = 'rgba(255,255,255,0.7)';
         this.field.style.backgroundBlendMode = 'overlay';
         this.load = false;
+        set('currentBgr', {
+          bgr: this.backgroundImage,
+          kind: this.kind,
+        });
       }
       for (let i = 0; i < this.countCell - 1; i += 1) {
         this.cells[i].element.style.backgroundImage = this.backgroundImage;
@@ -362,8 +378,8 @@ export default class Field {
     }));
 
     this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
-      let leftDiff = this.empty.left - item.left;
-      let topDiff = this.empty.top - item.top;
+      const leftDiff = this.empty.left - item.left;
+      const topDiff = this.empty.top - item.top;
 
       const animateRight = () => {
         this.move(item);
@@ -416,7 +432,8 @@ export default class Field {
       this.timer();
     }, 1000);
 
-    this.record.addEventListener('click', () => {
+    this.record.addEventListener('click', (e) => {
+      e.stopPropagation();
       sortrecords();
     });
 

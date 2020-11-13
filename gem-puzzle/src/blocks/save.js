@@ -7,6 +7,7 @@ export default function btnSave(field) {
 
   btn.addEventListener('click', () => {
     set('longGame', field.cells);
+    set('longAnimatedList', field.animatedList);
     set('empty', field.empty);
     set('longTimeStepsBgr', {
       steps: field.stepsCounter,

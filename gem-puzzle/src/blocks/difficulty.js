@@ -41,12 +41,10 @@ export default class Difficulty {
     item3.input.setAttribute('checked', true);
     this.level.lastChild.appendChild(item3.label);
 
-    // let btnsubmit = create('button', 'btn popup-btn', 'применить', this.level, ['type', 'submit'])
-
-    let btnsubmit = create('button', 'btn popup-btn', 'применить', this.level, ['type', 'button']);
+    const btnsubmit = create('button', 'btn popup-btn', 'применить', this.level, ['type', 'button']);
     this.level.appendChild(btnsubmit);
 
-    const btnclose = create('button', 'close-btn', create('span', 'visually-hidden', close), null, ['type', 'button']);
+    const btnclose = create('button', 'close-btn', create('span', 'visually-hidden'), null, ['type', 'button']);
     this.popup.firstChild.appendChild(btnclose);
 
     const check = document.querySelectorAll('.input-level');
@@ -55,12 +53,12 @@ export default class Difficulty {
     let kind = 'kind-both';
 
     for (let i = 0; i < check.length; i += 1) {
-      check[i].addEventListener('click', function() {
+      check[i].addEventListener('click', () => {
         levelLevel = check[i].value;
       });
     }
     for (let i = 0; i < check2.length; i += 1) {
-      check2[i].addEventListener('click', function () {
+      check2[i].addEventListener('click', () => {
         kind = check2[i].value;
       });
     }
