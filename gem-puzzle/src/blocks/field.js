@@ -225,7 +225,7 @@ export default class Field {
         clearInterval(this.timerStop);
 
         this.stopAnimation = true;
-        // this.field.style.pointerEvents = 'none'
+        this.field.style.pointerEvents = 'none';
         if (!this.isAutoPlay) {
           setTimeout(() => {
             this.winner();

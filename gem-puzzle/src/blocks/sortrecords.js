@@ -1,6 +1,8 @@
 /* eslint-disable import/extensions */
 import create from '../utils/create.js';
-import { get } from '../utils/storage.js';
+import {
+  get
+} from '../utils/storage.js';
 
 export default function sortrecords() {
   const main = document.querySelector('main');
@@ -9,12 +11,16 @@ export default function sortrecords() {
   const recordsWrap = create('div', 'records-wrap');
   popup.firstChild.append(recordsWrap);
   let count = 10;
+  let sortList = [];
 
   function byKey(key) {
     return (a, b) => (a[key] > b[key] ? 1 : -1);
   }
 
-  let sortList = listRecords.sort(byKey('winTime'));
+  if (listRecords !== null) {
+    sortList = listRecords.sort(byKey('winTime'));
+  }
+
   const stepTitle = create('div', 'player-step', 'ШАГИ:');
   const timeTitle = create('div', 'player-time', 'ВРЕМЯ:');
 
