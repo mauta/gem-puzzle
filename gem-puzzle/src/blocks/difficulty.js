@@ -76,7 +76,7 @@ export default class Difficulty {
     });
 
     btnclose.addEventListener('click', () => {
-      closePopup(this.popup);
+       closePopup(this.popup);
     });
   }
 }

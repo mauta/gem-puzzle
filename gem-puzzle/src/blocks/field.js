@@ -106,8 +106,8 @@ export default class Field {
 
   dragDrop(item) {
     this.countCell = this.size * this.size;
-
     const drop = () => {
+      console.log('drag');
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
       let countRight = 0;
@@ -199,8 +199,6 @@ export default class Field {
       cellMoved.top = emptyTop;
       cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
       cellMoved.element.style.gridRowStart = `${emptyTop}`;
-      this.emptyCell.style.gridColumnStart = this.empty.left;
-      this.emptyCell.style.gridRowStart = this.empty.top;
       if (isSound()) {
         const audio = document.querySelector('.audio');
         audio.currentTime = 0;
@@ -372,14 +370,25 @@ export default class Field {
     }
 
     this.setDraggable();
-    this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
+
+    const tryDrag = (e) => {
+      const item = this.cells.find((el) => el.element === e.target);
       this.dragDrop(item);
-    }));
+    };
+
+    this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
+
+    // const killBill = () => {
+    //   this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
+    //   this.cells.forEach((item) => item.element.removeEventListener('mouseup', killBill));
+    // };
+
+    // this.cells.forEach((item) => item.element.addEventListener('mouseup', killBill));
 
     this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
-
+      // this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
       const animateRight = () => {
         this.move(item);
         item.element.classList.remove('moveRight');
@@ -556,8 +565,8 @@ export default class Field {
 
   arrowMove() {
     document.addEventListener('keydown', (e) => {
-      e.preventDefault();
       if (e.code === 'ArrowUp') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
@@ -566,6 +575,7 @@ export default class Field {
         }
       }
       if (e.code === 'ArrowDown') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
@@ -574,6 +584,7 @@ export default class Field {
         }
       }
       if (e.code === 'ArrowLeft') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
@@ -582,6 +593,7 @@ export default class Field {
         }
       }
       if (e.code === 'ArrowRight') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);
