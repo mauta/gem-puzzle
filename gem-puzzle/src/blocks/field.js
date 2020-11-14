@@ -110,6 +110,7 @@ export default class Field {
     const drop = () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
+      let countRight = 0;
       if (leftDiff === 1 && topDiff === 0) {
         this.animatedList.push(3);
       }
@@ -127,8 +128,6 @@ export default class Field {
       const emptyTop = this.empty.top;
       this.empty.left = item.left;
       this.empty.top = item.top;
-      let countRight = 0;
-
       item.left = emptyLeft;
       item.top = emptyTop;
       item.element.style.gridColumnStart = `${emptyLeft}`;

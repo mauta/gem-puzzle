@@ -611,7 +611,7 @@ class Field {
         clearInterval(this.timerStop);
 
         this.stopAnimation = true;
-        // this.field.style.pointerEvents = 'none'
+        this.field.style.pointerEvents = 'none';
         if (!this.isAutoPlay) {
           setTimeout(() => {
             this.winner();
@@ -1194,12 +1194,16 @@ function sortrecords() {
   const recordsWrap = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'records-wrap');
   popup.firstChild.append(recordsWrap);
   let count = 10;
+  let sortList = [];
 
   function byKey(key) {
     return (a, b) => (a[key] > b[key] ? 1 : -1);
   }
 
-  let sortList = listRecords.sort(byKey('winTime'));
+  if (listRecords !== null) {
+    sortList = listRecords.sort(byKey('winTime'));
+  }
+
   const stepTitle = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-step', 'ШАГИ:');
   const timeTitle = Object(_utils_create_js__WEBPACK_IMPORTED_MODULE_0__["default"])('div', 'player-time', 'ВРЕМЯ:');
 
