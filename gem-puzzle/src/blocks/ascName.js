@@ -49,8 +49,7 @@ export default function ascname(winner) {
   const setName = (el) => {
     el.stopPropagation();
     if (el.type === 'keydown') {
-      debugger;
-      if (el.keyCode === 13) {
+       if (el.keyCode === 13) {
         nameText.innerText = nameInput.value;
         nameInput.classList.add('hidden');
         nameText.classList.remove('hidden');
