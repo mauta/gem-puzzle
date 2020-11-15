@@ -7,6 +7,7 @@ export default function restart(field) {
 
   btn.addEventListener('click', () => {
     field.delete();
+    // eslint-disable-next-line no-param-reassign
     field.isAutoPlay = false;
     field.draw(false);
   });

@@ -105,9 +105,24 @@ export default class Field {
   }
 
   dragDrop(item) {
+    console.log(this.empty);
     this.countCell = this.size * this.size;
     let countRight = 0;
     const drop = () => {
+      const leftDiff = this.empty.left - item.left;
+      const topDiff = this.empty.top - item.top;
+      if (leftDiff === 1 && topDiff === 0) {
+        this.animatedList.push(3);
+      }
+      if (leftDiff === -1 && topDiff === 0) {
+        this.animatedList.push(1);
+      }
+      if (topDiff === 1 && leftDiff === 0) {
+        this.animatedList.push(0);
+      }
+      if (topDiff === -1 && leftDiff === 0) {
+        this.animatedList.push(2);
+      }
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
       this.empty.left = item.left;
@@ -126,7 +141,6 @@ export default class Field {
       });
 
       this.emptyCell.removeEventListener('drop', drop);
-      this.setDraggable();
 
       for (let i = 0; i < this.countCell - 1; i += 1) {
         const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
@@ -139,7 +153,9 @@ export default class Field {
           this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
         }
         if (countRight === this.countCell - 1) {
-          this.cells.forEach((el) => { el.element.style.opacity = '0'; });
+          this.cells.forEach((el) => {
+            el.element.style.opacity = '0';
+          });
           this.field.style.backgroundColor = 'transparent';
           clearInterval(this.timerStop);
           this.field.style.pointerEvents = 'none';
@@ -149,6 +165,8 @@ export default class Field {
         }
       }
       this.step();
+      this.setDraggable();
+      // this.movement();
     };
 
     this.emptyCell.addEventListener('drop', drop);
@@ -202,7 +220,9 @@ export default class Field {
         this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
       }
       if (countRight === this.countCell - 1) {
-        this.cells.forEach((el) => { el.element.style.opacity = '0'; });
+        this.cells.forEach((el) => {
+          el.element.style.opacity = '0';
+        });
         this.field.style.backgroundColor = 'transparent';
         clearInterval(this.timerStop);
 
@@ -217,6 +237,7 @@ export default class Field {
     }
     this.step();
     this.setDraggable();
+    // this.movement();
   }
 
   draw(isNew) {
@@ -274,9 +295,15 @@ export default class Field {
       this.kind = saveBgr.kind;
       this.empty = get('empty');
       save.forEach((item) => {
-        const { left } = item;
-        const { top } = item;
-        const { value } = item;
+        const {
+          left
+        } = item;
+        const {
+          top
+        } = item;
+        const {
+          value
+        } = item;
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
           value,
@@ -354,16 +381,18 @@ export default class Field {
       }
     }
 
+    this.timerStop = setInterval(() => {
+      this.timer();
+    }, 1000);
+    this.record.addEventListener('click', sortrecords);
+    this.movement();
+    this.arrowMove();
+  }
+
+  movement() {
     this.setDraggable();
-
-    const tryDrag = (e) => {
+    const tryMove = (e) => {
       const item = this.cells.find((el) => el.element === e.target);
-      this.dragDrop(item);
-    };
-
-    this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
-
-    this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
 
@@ -412,15 +441,18 @@ export default class Field {
         item.element.addEventListener('transitionend', animateUp);
         this.animatedList.push(2);
       }
-    }));
+      // this.field.removeEventListener('mouseup', tryMove);
+    };
 
-    this.timerStop = setInterval(() => {
-      this.timer();
-    }, 1000);
+    const tryDrag = (e) => {
+      const item = this.cells.find((el) => el.element === e.target);
+      console.log(item);
+      this.dragDrop(item);
+      // this.field.removeEventListener('mousedown', tryDrag);
+    };
 
-    this.record.addEventListener('click', sortrecords);
-
-    this.arrowMove();
+    this.field.addEventListener('mousedown', tryDrag);
+    this.field.addEventListener('click', tryMove);
   }
 
   delete() {

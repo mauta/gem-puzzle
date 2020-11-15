@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import create from '../utils/create';
 import {
   set,
@@ -49,7 +50,7 @@ export default function ascname(winner) {
   const setName = (el) => {
     el.stopPropagation();
     if (el.type === 'keydown') {
-       if (el.keyCode === 13) {
+      if (el.keyCode === 13) {
         nameText.innerText = nameInput.value;
         nameInput.classList.add('hidden');
         nameText.classList.remove('hidden');
