@@ -105,7 +105,6 @@ export default class Field {
   }
 
   dragDrop(item) {
-    console.log(this.empty);
     this.countCell = this.size * this.size;
     let countRight = 0;
     const drop = () => {
@@ -166,7 +165,6 @@ export default class Field {
       }
       this.step();
       this.setDraggable();
-      // this.movement();
     };
 
     this.emptyCell.addEventListener('drop', drop);
@@ -296,13 +294,13 @@ export default class Field {
       this.empty = get('empty');
       save.forEach((item) => {
         const {
-          left
+          left,
         } = item;
         const {
-          top
+          top,
         } = item;
         const {
-          value
+          value,
         } = item;
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
@@ -381,51 +379,44 @@ export default class Field {
       }
     }
 
-    this.timerStop = setInterval(() => {
-      this.timer();
-    }, 1000);
     this.record.addEventListener('click', sortrecords);
-    this.movement();
-    this.arrowMove();
-  }
-
-  movement() {
-    this.setDraggable();
-    const tryMove = (e) => {
+    const tryDrag = (e) => {
       const item = this.cells.find((el) => el.element === e.target);
+      this.dragDrop(item);
+    };
+
+    this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
+
+    this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
+      // item.element.removeEventListener('mousedown', tryDrag)
 
       const animateRight = () => {
         this.move(item);
         item.element.classList.remove('moveRight');
         item.element.removeEventListener('transitionend', animateRight);
       };
-
       const animateLeft = () => {
         this.move(item);
         item.element.classList.remove('moveLeft');
         item.element.removeEventListener('transitionend', animateLeft);
       };
-
       const animateDown = () => {
         this.move(item);
         item.element.classList.remove('moveDown');
         item.element.removeEventListener('transitionend', animateDown);
       };
-
       const animateUp = () => {
         this.move(item);
         item.element.classList.remove('moveUp');
         item.element.removeEventListener('transitionend', animateUp);
       };
-
       if (leftDiff === 1 && topDiff === 0) {
         item.element.classList.add('moveRight');
         item.element.addEventListener('transitionend', animateRight);
         this.animatedList.push(3);
       }
-
       if (leftDiff === -1 && topDiff === 0) {
         item.element.classList.add('moveLeft');
         item.element.addEventListener('transitionend', animateLeft);
@@ -441,18 +432,12 @@ export default class Field {
         item.element.addEventListener('transitionend', animateUp);
         this.animatedList.push(2);
       }
-      // this.field.removeEventListener('mouseup', tryMove);
-    };
-
-    const tryDrag = (e) => {
-      const item = this.cells.find((el) => el.element === e.target);
-      console.log(item);
-      this.dragDrop(item);
-      // this.field.removeEventListener('mousedown', tryDrag);
-    };
-
-    this.field.addEventListener('mousedown', tryDrag);
-    this.field.addEventListener('click', tryMove);
+    }));
+    this.timerStop = setInterval(() => {
+      this.timer();
+    }, 1000);
+    this.record.addEventListener('click', sortrecords);
+    this.arrowMove();
   }
 
   delete() {
