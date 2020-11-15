@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import create from '../utils/create.js';
 import {
-  get
+  get,
 } from '../utils/storage.js';
 
 export default function sortrecords() {
@@ -26,7 +26,9 @@ export default function sortrecords() {
 
   create('div', 'player-title', [create('div', 'player-name', 'ИМЯ:'), create('div', 'player-level', 'УРОВЕНЬ:'), stepTitle, timeTitle], recordsWrap);
 
-  sortList.length < 10 ? count = sortList.length : count = 10;
+  if (sortList.length < 10) {
+    count = sortList.length;
+  }
 
   stepTitle.addEventListener('click', () => {
     sortList = listRecords.sort(byKey('winStep'));
@@ -37,7 +39,7 @@ export default function sortrecords() {
       const sec = sortList[i].winTime % 60;
       const min = Math.floor(sortList[i].winTime / 60);
       const playerName = create('span', 'player-name', `${sortList[i].winName}`);
-      const player = create('div', 'player', [playerName, create('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), create('div', 'player-step', `${sortList[i].winStep}`), create('div', 'player-time', `${min} : ${sec}`)], recordsWrap);
+      create('div', 'player', [playerName, create('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), create('div', 'player-step', `${sortList[i].winStep}`), create('div', 'player-time', `${min} : ${sec}`)], recordsWrap);
     }
   });
 

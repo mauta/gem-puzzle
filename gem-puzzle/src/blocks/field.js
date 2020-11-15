@@ -106,6 +106,7 @@ export default class Field {
 
   dragDrop(item) {
     this.countCell = this.size * this.size;
+    let countRight = 0;
     const drop = () => {
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
@@ -138,7 +139,7 @@ export default class Field {
           this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
         }
         if (countRight === this.countCell - 1) {
-          this.cells.forEach((el) => el.element.style.opacity = '0');
+          this.cells.forEach((el) => { el.element.style.opacity = '0'; });
           this.field.style.backgroundColor = 'transparent';
           clearInterval(this.timerStop);
           this.field.style.pointerEvents = 'none';
@@ -201,7 +202,7 @@ export default class Field {
         this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
       }
       if (countRight === this.countCell - 1) {
-        this.cells.forEach(el => el.element.style.opacity = '0');
+        this.cells.forEach((el) => { el.element.style.opacity = '0'; });
         this.field.style.backgroundColor = 'transparent';
         clearInterval(this.timerStop);
 
@@ -247,9 +248,9 @@ export default class Field {
         const value = this.numbers[i];
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
-          value: value,
-          left: left,
-          top: top,
+          value,
+          left,
+          top,
           element: this.field.lastChild,
         });
       }
@@ -273,15 +274,15 @@ export default class Field {
       this.kind = saveBgr.kind;
       this.empty = get('empty');
       save.forEach((item) => {
-        const left = item.left;
-        const top = item.top;
-        const value = item.value;
+        const { left } = item;
+        const { top } = item;
+        const { value } = item;
         const cell = new Cell(value, this.field, top, left);
         this.cells.push({
-          value: value,
-          left: left,
-          top: top,
-          element: this.field.lastChild
+          value,
+          left,
+          top,
+          element: this.field.lastChild,
         });
       });
       set('currentGame', this.cells);
@@ -357,25 +358,14 @@ export default class Field {
 
     const tryDrag = (e) => {
       const item = this.cells.find((el) => el.element === e.target);
-      console.log(item);
       this.dragDrop(item);
     };
 
     this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
 
-    // const killBill = () => {
-    //   this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
-    //   this.cells.forEach((item) => item.element.removeEventListener('mouseup', killBill));
-    // };
-
-    // this.cells.forEach((item) => item.element.addEventListener('mouseup', killBill));
-
     this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
-
-      // this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
-      // item.element.removeEventListener('mousedown', tryDrag)
 
       const animateRight = () => {
         this.move(item);
