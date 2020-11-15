@@ -6,10 +6,10 @@ import {
 
 export default function sortrecords() {
   const main = document.querySelector('main');
-  const popup = create('div', 'dark-screen', create('div', 'popup', create('h2', 'title', 'РЕКОРДЫ')), main);
+  const popup2 = create('div', 'dark-screen-records', create('div', 'popup-record', create('h2', 'title', 'РЕКОРДЫ')), main);
   const listRecords = get('records');
   const recordsWrap = create('div', 'records-wrap');
-  popup.firstChild.append(recordsWrap);
+  popup2.firstChild.append(recordsWrap);
   let count = 10;
   let sortList = [];
 
@@ -50,7 +50,7 @@ export default function sortrecords() {
       const sec = sortList[i].winTime % 60;
       const min = Math.floor(sortList[i].winTime / 60);
       const playerName = create('span', 'player-name', `${sortList[i].winName}`);
-      const player = create('div', 'player', [playerName, create('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), create('div', 'player-step', `${sortList[i].winStep}`), create('div', 'player-time', `${min} : ${sec}`)], recordsWrap);
+      create('div', 'player', [playerName, create('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), create('div', 'player-step', `${sortList[i].winStep}`), create('div', 'player-time', `${min} : ${sec}`)], recordsWrap);
     }
   });
 
@@ -58,17 +58,17 @@ export default function sortrecords() {
     const sec = sortList[i].winTime % 60;
     const min = Math.floor(sortList[i].winTime / 60);
     const playerName = create('span', 'player-name', `${sortList[i].winName}`);
-    const player = create('div', 'player', [playerName, create('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), create('div', 'player-step', `${sortList[i].winStep}`), create('div', 'player-time', `${min} : ${sec}`)], recordsWrap);
+    create('div', 'player', [playerName, create('div', 'player-level', `${sortList[i].winLevel}x${sortList[i].winLevel}`), create('div', 'player-step', `${sortList[i].winStep}`), create('div', 'player-time', `${min} : ${sec}`)], recordsWrap);
   }
 
   const btnclose = create('button', 'close-btn', create('span', 'visually-hidden', 'close'), null, ['type', 'button']);
-  popup.firstChild.append(btnclose);
+  popup2.firstChild.append(btnclose);
 
   function closePopup(popup) {
     popup.remove();
   }
 
   btnclose.addEventListener('click', () => {
-    closePopup(popup);
+    closePopup(popup2);
   });
 }

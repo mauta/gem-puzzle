@@ -192,8 +192,7 @@ function ascname(winner) {
   const setName = (el) => {
     el.stopPropagation();
     if (el.type === 'keydown') {
-      debugger;
-      if (el.keyCode === 13) {
+       if (el.keyCode === 13) {
         nameText.innerText = nameInput.value;
         nameInput.classList.add('hidden');
         nameText.classList.remove('hidden');
@@ -365,7 +364,7 @@ class Difficulty {
     });
 
     btnclose.addEventListener('click', () => {
-      closePopup(this.popup);
+       closePopup(this.popup);
     });
   }
 }
@@ -492,65 +491,71 @@ class Field {
 
   dragDrop(item) {
     this.countCell = this.size * this.size;
-
     const drop = () => {
-      const leftDiff = this.empty.left - item.left;
-      const topDiff = this.empty.top - item.top;
-      if (leftDiff === 1 && topDiff === 0) {
-        this.animatedList.push(3);
-      }
 
-      if (leftDiff === -1 && topDiff === 0) {
-        this.animatedList.push(1);
-      }
-      if (topDiff === 1 && leftDiff === 0) {
-        this.animatedList.push(0);
-      }
-      if (topDiff === -1 && leftDiff === 0) {
-        this.animatedList.push(2);
-      }
+      console.log(item);
+      console.log(this.empty)
+
+      // const leftDiff = this.empty.left - item.left;
+      // const topDiff = this.empty.top - item.top;
+      // let countRight = 0;
+      // if (leftDiff === 1 && topDiff === 0) {
+      //   this.animatedList.push(3);
+      // }
+
+      // if (leftDiff === -1 && topDiff === 0) {
+      //   this.animatedList.push(1);
+      // }
+      // if (topDiff === 1 && leftDiff === 0) {
+      //   this.animatedList.push(0);
+      // }
+      // if (topDiff === -1 && leftDiff === 0) {
+      //   this.animatedList.push(2);
+      // }
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
       this.empty.left = item.left;
       this.empty.top = item.top;
-      let countRight = 0;
-
       item.left = emptyLeft;
       item.top = emptyTop;
       item.element.style.gridColumnStart = `${emptyLeft}`;
       item.element.style.gridRowStart = `${emptyTop}`;
-      if (Object(_sound__WEBPACK_IMPORTED_MODULE_4__["isSound"])()) {
-        const audio = document.querySelector('.audio');
-        audio.currentTime = 0;
-        audio.play();
-      }
+      // if (isSound()) {
+      //   const audio = document.querySelector('.audio');
+      //   audio.currentTime = 0;
+      //   audio.play();
+      // }
       this.cells.forEach((el) => {
         el.element.removeAttribute('draggable');
       });
+
+
+
+
       this.emptyCell.removeEventListener('drop', drop);
       this.setDraggable();
 
-      for (let i = 0; i < this.countCell - 1; i += 1) {
-        const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
-        if (position === this.cells[i].value) {
-          countRight += 1;
-          // eslint-disable-next-line no-unused-expressions
-          this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '0.8' : this.cells[i].element.style.opacity = '1';
-        } else {
-          // eslint-disable-next-line no-unused-expressions
-          this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
-        }
-        if (countRight === this.countCell - 1) {
-          this.cells.forEach((el) => el.element.style.opacity = '0');
-          this.field.style.backgroundColor = 'transparent';
-          clearInterval(this.timerStop);
-          this.field.style.pointerEvents = 'none';
-          setTimeout(() => {
-            this.winner();
-          }, 2000);
-        }
-      }
-      this.step();
+      // for (let i = 0; i < this.countCell - 1; i += 1) {
+      //   const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
+      //   if (position === this.cells[i].value) {
+      //     countRight += 1;
+      //     // eslint-disable-next-line no-unused-expressions
+      //     this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '0.8' : this.cells[i].element.style.opacity = '1';
+      //   } else {
+      //     // eslint-disable-next-line no-unused-expressions
+      //     this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
+      //   }
+      //   if (countRight === this.countCell - 1) {
+      //     this.cells.forEach((el) => el.element.style.opacity = '0');
+      //     this.field.style.backgroundColor = 'transparent';
+      //     clearInterval(this.timerStop);
+      //     this.field.style.pointerEvents = 'none';
+      //     setTimeout(() => {
+      //       this.winner();
+      //     }, 2000);
+      //   }
+      // }
+      // this.step();
     };
 
     this.emptyCell.addEventListener('drop', drop);
@@ -586,8 +591,6 @@ class Field {
       cellMoved.top = emptyTop;
       cellMoved.element.style.gridColumnStart = `${emptyLeft}`;
       cellMoved.element.style.gridRowStart = `${emptyTop}`;
-      this.emptyCell.style.gridColumnStart = this.empty.left;
-      this.emptyCell.style.gridRowStart = this.empty.top;
       if (Object(_sound__WEBPACK_IMPORTED_MODULE_4__["isSound"])()) {
         const audio = document.querySelector('.audio');
         audio.currentTime = 0;
@@ -759,13 +762,28 @@ class Field {
     }
 
     this.setDraggable();
-    this.cells.forEach((item) => item.element.addEventListener('mousedown', () => {
+
+    const tryDrag = (e) => {
+      const item = this.cells.find((el) => el.element === e.target);
+      console.log(item);
       this.dragDrop(item);
-    }));
+    };
+
+    this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
+
+    // const killBill = () => {
+    //   this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
+    //   this.cells.forEach((item) => item.element.removeEventListener('mouseup', killBill));
+    // };
+
+    // this.cells.forEach((item) => item.element.addEventListener('mouseup', killBill));
 
     this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
+
+      // this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
+      // item.element.removeEventListener('mousedown', tryDrag)
 
       const animateRight = () => {
         this.move(item);
@@ -943,8 +961,8 @@ class Field {
 
   arrowMove() {
     document.addEventListener('keydown', (e) => {
-      e.preventDefault();
       if (e.code === 'ArrowUp') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top - 1 && el.left === this.empty.left);
@@ -953,6 +971,7 @@ class Field {
         }
       }
       if (e.code === 'ArrowDown') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top + 1 && el.left === this.empty.left);
@@ -961,6 +980,7 @@ class Field {
         }
       }
       if (e.code === 'ArrowLeft') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left - 1);
@@ -969,6 +989,7 @@ class Field {
         }
       }
       if (e.code === 'ArrowRight') {
+        e.preventDefault();
         if (this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1)) {
           // eslint-disable-next-line max-len
           const item = this.cells.find((el) => el.top === this.empty.top && el.left === this.empty.left + 1);

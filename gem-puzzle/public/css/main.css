@@ -1,12 +1,12 @@
-/* @font-face {
-    /* font-family: "Gasrux";
-    font-family: 'Amatic SC', cursive;
+@font-face {
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
   font-style: normal;
   font-weight: 400;
   src: url("fonts/19689.otf");
 
 }
-*/
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -35,16 +35,16 @@ main {
 h2,
 h3 {
   text-align: center;
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
   font-weight: 900;
 }
 
 .title {
   text-align: center;
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
-  text-shadow: 0 0 1px black;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
+ /* text-shadow: 0 0 1px black; */
 }
 
 .score {
@@ -52,12 +52,12 @@ h3 {
   width: 500px;
   justify-content: space-between;
   margin: 0 auto;
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
-  text-shadow: 0 0 1px black;
+ /* text-shadow: 0 0 1px black; */
 }
 
 .record {
@@ -93,9 +93,9 @@ h3 {
 .cell {
   display: flex;
   box-sizing: border-box;
-  /* font-family: "Gasrux", cursive; */
-  font-family: 'Amatic SC', cursive;
-  text-shadow: 0 0 1px black;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
+   /* text-shadow: 0 0 1px black; */
   font-size: 25px;
   font-weight: bold;
   letter-spacing: 0;
@@ -209,9 +209,9 @@ h3 {
 
 .btn {
   overflow-wrap: normal;
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
-  text-shadow: 0 0 1px black;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
+  /* text-shadow: 0 0 1px black; */
   font-weight: bold;
   font-size: 26px;
   background-color: transparent;
@@ -240,9 +240,9 @@ h3 {
   width: 400px;
   margin: 0 auto;
   justify-content: space-between;
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
-  text-shadow: 0 0 1px black;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
+   /* text-shadow: 0 0 1px black; */
   font-size: 26px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -250,10 +250,11 @@ h3 {
 }
 
 
-.popup {
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
-  text-shadow: 0 0 1px black;
+.popup,
+.popup-record {
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
+ /* text-shadow: 0 0 1px black; */
   font-weight: bold;
   font-size: 20px;
   letter-spacing: 1px;
@@ -275,9 +276,9 @@ h3 {
 }
 
 .popup-winner {
-  /* font-family: "Gasrux"; */
-  font-family: 'Amatic SC', cursive;
-  text-shadow: 0 0 1px black;
+  font-family: "Gasrux";
+  /* font-family: 'Amatic SC', cursive; */
+  /* text-shadow: 0 0 1px black; */
   font-weight: bold;
   font-size: 20px;
   letter-spacing: 1px;
@@ -379,7 +380,8 @@ h3 {
   margin: 0 auto;
 }
 
-.dark-screen {
+.dark-screen,
+.dark-screen-records {
   position: absolute;
   display: block;
   width: 100%;

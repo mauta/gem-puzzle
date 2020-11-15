@@ -107,23 +107,6 @@ export default class Field {
   dragDrop(item) {
     this.countCell = this.size * this.size;
     const drop = () => {
-      console.log('drag');
-      const leftDiff = this.empty.left - item.left;
-      const topDiff = this.empty.top - item.top;
-      let countRight = 0;
-      if (leftDiff === 1 && topDiff === 0) {
-        this.animatedList.push(3);
-      }
-
-      if (leftDiff === -1 && topDiff === 0) {
-        this.animatedList.push(1);
-      }
-      if (topDiff === 1 && leftDiff === 0) {
-        this.animatedList.push(0);
-      }
-      if (topDiff === -1 && leftDiff === 0) {
-        this.animatedList.push(2);
-      }
       const emptyLeft = this.empty.left;
       const emptyTop = this.empty.top;
       this.empty.left = item.left;
@@ -140,6 +123,7 @@ export default class Field {
       this.cells.forEach((el) => {
         el.element.removeAttribute('draggable');
       });
+
       this.emptyCell.removeEventListener('drop', drop);
       this.setDraggable();
 
@@ -373,6 +357,7 @@ export default class Field {
 
     const tryDrag = (e) => {
       const item = this.cells.find((el) => el.element === e.target);
+      console.log(item);
       this.dragDrop(item);
     };
 
@@ -388,7 +373,10 @@ export default class Field {
     this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
+
       // this.cells.forEach((item) => item.element.removeEventListener('mousedown', tryDrag));
+      // item.element.removeEventListener('mousedown', tryDrag)
+
       const animateRight = () => {
         this.move(item);
         item.element.classList.remove('moveRight');
@@ -440,10 +428,7 @@ export default class Field {
       this.timer();
     }, 1000);
 
-    this.record.addEventListener('click', (e) => {
-      e.stopPropagation();
-      sortrecords();
-    });
+    this.record.addEventListener('click', sortrecords);
 
     this.arrowMove();
   }
@@ -452,6 +437,7 @@ export default class Field {
     this.stepsCounter = 0;
     this.timeCounter = 0;
     clearInterval(this.timerStop);
+    this.record.removeEventListener('click', sortrecords);
     while (this.field.firstChild) {
       this.field.removeChild(this.field.firstChild);
     }
