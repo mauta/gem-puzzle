@@ -12,7 +12,7 @@ const main = create('main', '', create('h1', 'title', 'Gem Puzzle'));
 document.body.prepend(main);
 const fieldWrap = create('div', 'field-wrap', null, main);
 const field = new Field(START_SIZE);
-const buttons = create('div', 'buttons', null, main);
+create('div', 'buttons', null, main);
 btnNewGame(field);
 btnRestart(field);
 btnCapitulate(field);

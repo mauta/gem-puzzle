@@ -378,14 +378,15 @@ export default class Field {
         this.cells[i].element.style.color = 'transparent';
       }
     }
-
+    this.setDraggable();
     this.record.addEventListener('click', sortrecords);
-    const tryDrag = (e) => {
-      const item = this.cells.find((el) => el.element === e.target);
-      this.dragDrop(item);
-    };
 
-    this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
+    // const tryDrag = (e) => {
+    //   const item = this.cells.find((el) => el.element === e.target);
+    //   this.dragDrop(item);
+    // };
+
+    // this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
 
     this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
       const leftDiff = this.empty.left - item.left;
