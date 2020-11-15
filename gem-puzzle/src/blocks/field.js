@@ -376,6 +376,7 @@ export default class Field {
     if (this.kind === 'kind-img') {
       for (let i = 0; i < this.countCell - 1; i += 1) {
         this.cells[i].element.style.color = 'transparent';
+        this.cells[i].element.style.textShadow = 'none';
       }
     }
     this.setDraggable();
