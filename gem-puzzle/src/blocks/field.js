@@ -105,6 +105,7 @@ export default class Field {
   }
 
   dragDrop(item) {
+    console.log('понесли')
     this.countCell = this.size * this.size;
     let countRight = 0;
     const drop = () => {
@@ -379,46 +380,59 @@ export default class Field {
         this.cells[i].element.style.textShadow = 'none';
       }
     }
-    this.setDraggable();
+
+    this.timerStop = setInterval(() => {
+      this.timer();
+    }, 1000);
     this.record.addEventListener('click', sortrecords);
+  }
 
-    // const tryDrag = (e) => {
-    //   const item = this.cells.find((el) => el.element === e.target);
-    //   this.dragDrop(item);
-    // };
+  movement() {
+    this.arrowMove();
+    this.setDraggable();
 
-    // this.cells.forEach((item) => item.element.addEventListener('mousedown', tryDrag));
 
-    this.cells.forEach((item) => item.element.addEventListener('mouseup', () => {
+
+    this.field.addEventListener('mousedown', tryDrag);
+
+    const tryMove = (e) => {
+      console.log('кликнули');
+      const item = this.cells.find((el) => el.element === e.target);
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
-      // item.element.removeEventListener('mousedown', tryDrag)
+      this.field.removeEventListener('mousedown', tryDrag);
+      this.field.removeEventListener('click', tryMove);
 
       const animateRight = () => {
         this.move(item);
         item.element.classList.remove('moveRight');
         item.element.removeEventListener('transitionend', animateRight);
       };
+
       const animateLeft = () => {
         this.move(item);
         item.element.classList.remove('moveLeft');
         item.element.removeEventListener('transitionend', animateLeft);
       };
+
       const animateDown = () => {
         this.move(item);
         item.element.classList.remove('moveDown');
         item.element.removeEventListener('transitionend', animateDown);
       };
+
       const animateUp = () => {
         this.move(item);
         item.element.classList.remove('moveUp');
         item.element.removeEventListener('transitionend', animateUp);
       };
+
       if (leftDiff === 1 && topDiff === 0) {
         item.element.classList.add('moveRight');
         item.element.addEventListener('transitionend', animateRight);
         this.animatedList.push(3);
       }
+
       if (leftDiff === -1 && topDiff === 0) {
         item.element.classList.add('moveLeft');
         item.element.addEventListener('transitionend', animateLeft);
@@ -434,12 +448,35 @@ export default class Field {
         item.element.addEventListener('transitionend', animateUp);
         this.animatedList.push(2);
       }
-    }));
-    this.timerStop = setInterval(() => {
-      this.timer();
-    }, 1000);
-    this.record.addEventListener('click', sortrecords);
-    this.arrowMove();
+
+      
+      // this.field.removeEventListener('mouseup', tryMove);
+    };
+
+    const tryDrag = (e) => {
+      const item = this.cells.find((el) => el.element === e.target);
+      console.log('нажали мышь');
+
+      const toDrag =()=>{
+        this.dragDrop(item);
+        e.target.addEventListener('mousemove', toDrag);
+        this.field.removeEventListener('click', tryMove);
+      };
+
+      const toClick =()=>{
+        e.target.removeEventListener('mousemove', toDrag);
+        e.target.removeEventListener('moveup', toClick);
+      };
+
+
+      e.target.addEventListener('mousemove', toDrag);
+
+      e.target.addEventListener('moveup', toClick);
+
+
+    };
+
+    this.field.addEventListener('click', tryMove);
   }
 
   delete() {
