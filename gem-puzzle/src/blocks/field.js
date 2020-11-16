@@ -88,105 +88,6 @@ export default class Field {
     ascname(winnerScore);
   }
 
-  setDraggable() {
-    this.cells.forEach((item) => {
-      const leftDiff = Math.abs(this.empty.left - item.left);
-      const topDiff = Math.abs(this.empty.top - item.top);
-
-      if (leftDiff + topDiff > 1) {
-        item.element.removeAttribute('draggable');
-      } else {
-        item.element.setAttribute('draggable', true);
-      }
-    });
-
-    this.emptyCell.style.gridColumnStart = `${this.empty.left}`;
-    this.emptyCell.style.gridRowStart = `${this.empty.top}`;
-  }
-
-  dragDrop(item) {
-    console.log('понесли')
-    this.countCell = this.size * this.size;
-    let countRight = 0;
-    const drop = () => {
-      const leftDiff = this.empty.left - item.left;
-      const topDiff = this.empty.top - item.top;
-      if (leftDiff === 1 && topDiff === 0) {
-        this.animatedList.push(3);
-      }
-      if (leftDiff === -1 && topDiff === 0) {
-        this.animatedList.push(1);
-      }
-      if (topDiff === 1 && leftDiff === 0) {
-        this.animatedList.push(0);
-      }
-      if (topDiff === -1 && leftDiff === 0) {
-        this.animatedList.push(2);
-      }
-      const emptyLeft = this.empty.left;
-      const emptyTop = this.empty.top;
-      this.empty.left = item.left;
-      this.empty.top = item.top;
-      item.left = emptyLeft;
-      item.top = emptyTop;
-      item.element.style.gridColumnStart = `${emptyLeft}`;
-      item.element.style.gridRowStart = `${emptyTop}`;
-      if (isSound()) {
-        const audio = document.querySelector('.audio');
-        audio.currentTime = 0;
-        audio.play();
-      }
-      this.cells.forEach((el) => {
-        el.element.removeAttribute('draggable');
-      });
-
-      this.emptyCell.removeEventListener('drop', drop);
-
-      for (let i = 0; i < this.countCell - 1; i += 1) {
-        const position = (this.cells[i].top - 1) * this.size + this.cells[i].left;
-        if (position === this.cells[i].value) {
-          countRight += 1;
-          // eslint-disable-next-line no-unused-expressions
-          this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '0.8' : this.cells[i].element.style.opacity = '1';
-        } else {
-          // eslint-disable-next-line no-unused-expressions
-          this.kind === 'kind-digit' ? this.cells[i].element.style.opacity = '1' : this.cells[i].element.style.opacity = '0.8';
-        }
-        if (countRight === this.countCell - 1) {
-          this.cells.forEach((el) => {
-            el.element.style.opacity = '0';
-          });
-          this.field.style.backgroundColor = 'transparent';
-          clearInterval(this.timerStop);
-          this.field.style.pointerEvents = 'none';
-          setTimeout(() => {
-            this.winner();
-          }, 2000);
-        }
-      }
-      this.step();
-      this.setDraggable();
-    };
-
-    this.emptyCell.addEventListener('drop', drop);
-
-    item.element.addEventListener('dragstart', (evt) => {
-      evt.target.classList.add('selected');
-      setTimeout(() => {
-        evt.target.style.display = 'none';
-      }, 0);
-    });
-
-    item.element.addEventListener('dragend', (evt) => {
-      evt.target.classList.remove('selected');
-      evt.target.style.display = 'flex';
-    });
-
-    this.field.addEventListener('dragover', (evt) => {
-      evt.preventDefault();
-    });
-  }
-
   move(item) {
     const leftDiff = Math.abs(this.empty.left - item.left);
     const topDiff = Math.abs(this.empty.top - item.top);
@@ -235,8 +136,6 @@ export default class Field {
       }
     }
     this.step();
-    this.setDraggable();
-    // this.movement();
   }
 
   draw(isNew) {
@@ -373,6 +272,9 @@ export default class Field {
         const persent = 100 / (this.size - 1);
         this.cells[i].element.style.backgroundPosition = `${(value % this.size) * persent}% ${Math.floor(value / this.size) * persent}%`;
       }
+    } else {
+      this.backgroundImage = '';
+      this.field.style.backgroundImage = this.backgroundImage;
     }
     if (this.kind === 'kind-img') {
       for (let i = 0; i < this.countCell - 1; i += 1) {
@@ -381,58 +283,34 @@ export default class Field {
       }
     }
 
-    this.timerStop = setInterval(() => {
-      this.timer();
-    }, 1000);
-    this.record.addEventListener('click', sortrecords);
-  }
-
-  movement() {
-    this.arrowMove();
-    this.setDraggable();
-
-
-
-    this.field.addEventListener('mousedown', tryDrag);
-
-    const tryMove = (e) => {
-      console.log('кликнули');
-      const item = this.cells.find((el) => el.element === e.target);
+    this.cells.forEach((item) => item.element.addEventListener('click', () => {
       const leftDiff = this.empty.left - item.left;
       const topDiff = this.empty.top - item.top;
-      this.field.removeEventListener('mousedown', tryDrag);
-      this.field.removeEventListener('click', tryMove);
-
       const animateRight = () => {
         this.move(item);
         item.element.classList.remove('moveRight');
         item.element.removeEventListener('transitionend', animateRight);
       };
-
       const animateLeft = () => {
         this.move(item);
         item.element.classList.remove('moveLeft');
         item.element.removeEventListener('transitionend', animateLeft);
       };
-
       const animateDown = () => {
         this.move(item);
         item.element.classList.remove('moveDown');
         item.element.removeEventListener('transitionend', animateDown);
       };
-
       const animateUp = () => {
         this.move(item);
         item.element.classList.remove('moveUp');
         item.element.removeEventListener('transitionend', animateUp);
       };
-
       if (leftDiff === 1 && topDiff === 0) {
         item.element.classList.add('moveRight');
         item.element.addEventListener('transitionend', animateRight);
         this.animatedList.push(3);
       }
-
       if (leftDiff === -1 && topDiff === 0) {
         item.element.classList.add('moveLeft');
         item.element.addEventListener('transitionend', animateLeft);
@@ -448,35 +326,12 @@ export default class Field {
         item.element.addEventListener('transitionend', animateUp);
         this.animatedList.push(2);
       }
-
-      
-      // this.field.removeEventListener('mouseup', tryMove);
-    };
-
-    const tryDrag = (e) => {
-      const item = this.cells.find((el) => el.element === e.target);
-      console.log('нажали мышь');
-
-      const toDrag =()=>{
-        this.dragDrop(item);
-        e.target.addEventListener('mousemove', toDrag);
-        this.field.removeEventListener('click', tryMove);
-      };
-
-      const toClick =()=>{
-        e.target.removeEventListener('mousemove', toDrag);
-        e.target.removeEventListener('moveup', toClick);
-      };
-
-
-      e.target.addEventListener('mousemove', toDrag);
-
-      e.target.addEventListener('moveup', toClick);
-
-
-    };
-
-    this.field.addEventListener('click', tryMove);
+    }));
+    this.timerStop = setInterval(() => {
+      this.timer();
+    }, 1000);
+    this.record.addEventListener('click', sortrecords);
+    this.arrowMove();
   }
 
   delete() {

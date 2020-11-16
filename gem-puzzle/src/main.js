@@ -20,4 +20,3 @@ btnAddition(field);
 main.append(fieldWrap);
 field.init();
 field.draw(isNew);
-field.movement();
